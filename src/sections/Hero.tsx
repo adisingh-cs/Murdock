@@ -43,18 +43,18 @@ const Hero: React.FC = () => {
           
           {/* Right Column: Visual (Moved above content for mobile) */}
           <motion.div 
-            className="order-1 lg:order-2 flex justify-center lg:justify-end mt-4 lg:mt-0"
+            className="order-1 lg:order-2 flex justify-center lg:justify-end mt-4 lg:mt-0 -translate-y-4 lg:translate-y-0"
             style={{ y: isMobile ? 0 : y2 }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <div className="relative w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[500px]">
+            <div className="relative w-full max-w-[340px] sm:max-w-[480px] lg:max-w-[500px]">
               <img 
                 src="/hero-section-img.webp" 
                 alt="Murdock Dashboard" 
                 className="w-full h-auto object-contain drop-shadow-2xl" 
-                style={{ maxHeight: isMobile ? '30vh' : 'none' }}
+                style={{ maxHeight: isMobile ? '43vh' : 'none' }}
               />
             </div>
           </motion.div>
