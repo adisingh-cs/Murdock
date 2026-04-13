@@ -50,15 +50,15 @@ const WhatWeDo: React.FC = () => (
         transition={{ ...revealTransition, delay: 0.3 }}
         className="glass-dark border border-white/5 rounded-3xl overflow-hidden max-w-[900px] mx-auto mb-24"
       >
-        <div className="grid grid-cols-2 bg-white/[0.02] border-b border-white/5 py-5 px-8">
-          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-gold">Murdock IS</span>
-          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-muted">Murdock IS NOT</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 bg-white/[0.02] border-b border-white/5 py-5 px-8">
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-gold text-left md:text-center">Murdock IS</span>
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-muted mt-4 md:mt-0 text-left md:text-center">Murdock IS NOT</span>
         </div>
         <div className="divide-y divide-white/5">
           {isIsNot.map((item, i) => (
-            <div key={i} className="grid grid-cols-2 py-6 px-8 hover:bg-white/[0.01] transition-colors">
-              <span className="font-body font-medium text-[16px] text-text-primary pr-4">{item.is}</span>
-              <span className="font-body text-[15px] text-text-muted pr-4">{item.isNot}</span>
+            <div key={i} className="grid grid-cols-1 md:grid-cols-2 py-6 px-8 hover:bg-white/[0.01] transition-colors gap-4 md:gap-0">
+              <span className="font-body font-medium text-[16px] text-text-primary pr-4 text-left">{item.is}</span>
+              <span className="font-body text-[15px] text-text-muted pr-4 text-left">{item.isNot}</span>
             </div>
           ))}
         </div>

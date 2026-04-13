@@ -42,6 +42,11 @@
   * {
     border-color: var(--border-default);
     box-sizing: border-box;
+    caret-color: transparent;
+  }
+
+  input, textarea, [contenteditable="true"] {
+    caret-color: var(--gold);
   }
 
   html {

@@ -1,27 +1,50 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 
-const NotFound: React.FC = () => (
-  <div className="min-h-screen bg-navy flex items-center justify-center relative overflow-hidden">
-    <svg width="400" height="400" viewBox="0 0 600 600" className="absolute opacity-[0.03]" aria-hidden="true">
-      {Array.from({ length: 24 }).map((_, i) => (
-        <line key={i} x1="300" y1="300" x2={300 + 280 * Math.cos((i * 15 * Math.PI) / 180)} y2={300 + 280 * Math.sin((i * 15 * Math.PI) / 180)} stroke="white" strokeWidth="1" />
-      ))}
-      <circle cx="300" cy="300" r="280" fill="none" stroke="white" strokeWidth="1" />
-    </svg>
-    <span className="absolute font-display font-bold text-[120px] text-white/[0.07] select-none" aria-hidden="true">404</span>
-    <motion.div className="relative z-10 text-center px-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-      <div className="flex justify-center mb-6"><Logo variant="mark" height={64} /></div>
-      <h2 className="font-display font-bold text-[36px] text-white mb-3">This document doesn't exist.</h2>
-      <p className="font-body text-[17px] mb-8" style={{ color: 'rgba(255,255,255,0.55)' }}>Unlike Indian legal documents, this page was never compiled.</p>
-      <Link to="/" className="inline-block bg-gold text-navy font-body font-bold text-[15px] px-6 py-3 rounded-lg hover:bg-gold-light transition-colors">Go Back Home →</Link>
-      <p className="mt-6 font-body text-[13px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-        Lost? Reach out at <a href="mailto:adisingh.cs@gmail.com" className="hover:text-gold transition-colors">adisingh.cs@gmail.com</a>
-      </p>
-    </motion.div>
-  </div>
-);
+const NotFound: React.FC = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/');
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
+      {/* Subtle background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
+      
+      <motion.div 
+        className="relative z-10 text-center px-6" 
+        initial={{ opacity: 0, y: 40 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.7 }}
+      >
+        <div className="flex justify-center mb-10">
+          <Logo variant="mark" height={64} />
+        </div>
+        
+        <h1 className="font-display font-bold text-[80px] md:text-[120px] text-gold mb-2 leading-none">404</h1>
+        <h2 className="font-display font-bold text-[24px] md:text-[32px] text-text-primary mb-6">Page Not Found</h2>
+        
+        <p className="font-body text-[16px] text-text-secondary mb-10">
+          Redirecting you back home in a few seconds...
+        </p>
+
+        <Link to="/" className="inline-block bg-text-primary text-background font-body font-bold text-[15px] px-8 py-4 rounded-xl hover:bg-gold transition-all duration-300">
+          Go Back Home Now →
+        </Link>
+
+        <p className="mt-12 font-body text-[13px] text-text-muted">
+          Lost? Reach out at <a href="mailto:adisingh.cs@gmail.com" className="text-gold hover:underline transition-all">adisingh.cs@gmail.com</a>
+        </p>
+      </motion.div>
+    </div>
+  );
+};
 
 export default NotFound;

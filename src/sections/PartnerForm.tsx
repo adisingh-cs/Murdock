@@ -38,7 +38,7 @@ const PartnerForm: React.FC = () => {
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as unknown as Record<string, string>).toString(),
+      body: new URLSearchParams(formData as any).toString(),
     }).then(() => setSubmitted(true)).catch(() => setSubmitted(true));
   };
 
@@ -104,8 +104,11 @@ const PartnerForm: React.FC = () => {
                   exit={{ opacity: 0, x: -20 }}
                   className="p-8 md:p-12 glass-dark border border-white/10 rounded-3xl"
                 >
-                  <form name="murdock-partner-inquiry" method="POST" data-netlify="true" onSubmit={handleSubmit} className="space-y-8">
+                  <form name="murdock-partner-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" onSubmit={handleSubmit} className="space-y-8">
                     <input type="hidden" name="form-name" value="murdock-partner-inquiry" />
+                    <p className="hidden">
+                      <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+                    </p>
                     
                     <div className="grid md:grid-cols-2 gap-8">
                       <div className="space-y-1 text-left">
