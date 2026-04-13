@@ -2,63 +2,121 @@ import React from 'react';
 import { motion, useSpring, useInView } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 
-const cards = [
-  { icon: '₹', title: 'Prohibitively Expensive', body: 'A simple legal notice costs ₹3,000–₹15,000 when routed through a lawyer. Most citizens simply cannot afford access to their own rights.' },
-  { icon: '📄', title: 'Dangerously Generic', body: 'Free online templates have zero India-specific validation, no jurisdiction awareness, and no structure that courts and forums actually expect.' },
-  { icon: '🔗', title: 'Zero Infrastructure', body: 'No unified API. No plugin system. No open platform that developers, law firms, or government bodies can build on top of — until now.' },
+const gaps = [
+  { 
+    id: '01',
+    title: 'The High Barrier', 
+    body: 'A basic legal notice costs ₹3,000–₹15,000 via a lawyer. 90% of Indians cannot afford their own rights.',
+    status: 'Inaccessible'
+  },
+  { 
+    id: '02',
+    title: 'Template Trap', 
+    body: 'Generic online templates lack jurisdiction awareness and India-specific validation needed for real impact.',
+    status: 'Counter-productive'
+  },
+  { 
+    id: '03',
+    title: 'The Infra Void', 
+    body: 'Developers have zero open-source APIs to build legal tools for the common man. No infrastructure, until now.',
+    status: 'Fragmented'
+  },
 ];
 
-const AnimatedNumber: React.FC<{ value: string; label: string }> = ({ value, label }) => {
+const AnimatedMetric: React.FC<{ value: string; label: string; prefix?: string }> = ({ value, label, prefix }) => {
   const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const numericPart = value.replace(/[^0-9.]/g, '');
   const suffix = value.replace(/[0-9.]/g, '');
-  const spring = useSpring(0, { stiffness: 40, damping: 20 });
+  const spring = useSpring(0, { stiffness: 45, damping: 20 });
 
   React.useEffect(() => { if (isInView) spring.set(parseFloat(numericPart) || 0); }, [isInView, spring, numericPart]);
 
   const [display, setDisplay] = React.useState('0');
   React.useEffect(() => {
-    const unsub = spring.on('change', (v: number) => {
-      setDisplay(numericPart.includes('.') ? v.toFixed(1) : Math.round(v).toString());
+    return spring.on('change', (v: number) => {
+      setDisplay(numericPart.includes('.') ? v.toFixed(1) : Math.round(v).toLocaleString());
     });
-    return unsub;
   }, [spring, numericPart]);
 
   return (
-    <div ref={ref} className="text-center">
-      <span className="font-display font-bold text-[48px] text-navy">{display}{suffix}</span>
-      <p className="font-body text-[14px] text-slate mt-1">{label}</p>
+    <div ref={ref} className="flex flex-col items-center p-8 glass-light border border-white/10 rounded-2xl w-full">
+      <div className="flex items-baseline gap-1 mb-2">
+        {prefix && <span className="text-gold font-display text-[24px] font-bold">{prefix}</span>}
+        <span className="font-display font-bold text-[42px] text-white tracking-tighter">{display}{suffix}</span>
+      </div>
+      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-white/40 font-bold text-center leading-relaxed">{label}</p>
     </div>
   );
 };
 
 const Problem: React.FC = () => (
-  <section id="problem" className="bg-parchment py-24 md:py-32">
-    <div className="mx-auto max-w-[1200px] px-6 md:px-12">
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">The Reality</motion.span>
-      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-navy max-w-[700px] mb-8">India Has 1.5 Billion People. Almost None of Them Can Afford a Legal Notice.</motion.h2>
-      <motion.p {...reveal} className="font-body text-[19px] leading-[1.9] text-slate max-w-[640px] mb-16">
-        Imagine you bought a phone online. It arrived defective. The company ignored you. You have every right to file a consumer complaint — but where do you start? The forms are complex. The language is archaic. A lawyer charges ₹5,000 just to draft the first letter. So most people give up. The company wins by default. Murdock exists so that never has to happen again.
-      </motion.p>
+  <section id="problem" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+    {/* Grid Background */}
+    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-        {cards.map((c, i) => (
-          <motion.div key={c.title} {...reveal} transition={{ ...revealTransition, delay: i * 0.1 }} className="bg-white rounded-2xl p-7 border border-warm-gray shadow-sm" whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(27,43,75,0.14)' }}>
-            <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center text-gold text-xl mb-4">{c.icon}</div>
-            <h3 className="font-body font-medium text-[22px] text-navy mb-2">{c.title}</h3>
-            <p className="font-body text-[17px] leading-[1.75] text-slate">{c.body}</p>
+    <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
+      <div className="grid lg:grid-cols-12 gap-16 items-start">
+        
+        {/* Story Content */}
+        <div className="lg:col-span-12 xl:col-span-5 flex flex-col space-y-8">
+          <motion.div {...reveal} className="flex items-center gap-3">
+            <div className="h-[1px] w-8 bg-gold/50" />
+            <span className="font-body font-bold text-[11px] uppercase tracking-[0.3em] text-gold/80">The Reality Gap</span>
           </motion.div>
-        ))}
+          
+          <motion.h2 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.1 }}
+            className="font-display font-bold text-[36px] md:text-[52px] text-white leading-[1.1] tracking-tight"
+          >
+            Access to law is a <span className="text-gold">luxury</span>, not a right.
+          </motion.h2>
+          
+          <motion.p 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.2 }}
+            className="font-body text-[18px] leading-[1.7] text-white/60"
+          >
+            Imagine you bought a defective phone. The company ignored you. You have the right to file a consumer complaint — but you can't. Forms are complex, jargon is archaic, and lawyers charge ₹5,000 just for the first letter. 
+            <br /><br />
+            The system wins by exhaustion. We're changing that.
+          </motion.p>
+        </div>
+
+        {/* Gaps Grid */}
+        <div className="lg:col-span-12 xl:col-span-7 grid md:grid-cols-1 gap-6">
+          {gaps.map((g, i) => (
+            <motion.div 
+              key={g.title} 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: i * 0.15 + 0.3 }} 
+              className="group p-1 bg-white/5 rounded-2xl border border-white/5 hover:border-gold/30 transition-all duration-500"
+            >
+              <div className="p-8 flex flex-col md:flex-row gap-6 items-start">
+                <span className="font-mono text-[14px] text-gold/40 font-bold">{g.id}</span>
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-center gap-4">
+                    <h3 className="font-display text-[22px] font-bold text-white group-hover:text-gold transition-colors">{g.title}</h3>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] uppercase tracking-wider text-white/30 font-bold">{g.status}</span>
+                  </div>
+                  <p className="font-body text-[15px] leading-relaxed text-white/50">{g.body}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <AnimatedNumber value="1.5B+" label="People in India with almost no affordable legal access" />
-        <AnimatedNumber value="3Cr+" label="Consumer disputes filed annually, most resolved against the complainant" />
-        <AnimatedNumber value="₹0" label="What it should cost to draft your first legal notice" />
+      {/* Metrics Strip */}
+      <div className="mt-24 grid md:grid-cols-3 gap-6">
+        <AnimatedMetric value="1.4B" label="Indians with near-zero affordable legal access" />
+        <AnimatedMetric value="5.1Cr" label="Total cases pending in Indian courts today" />
+        <AnimatedMetric value="0" prefix="₹" label="Cost to draft a valid notice with Murdock" />
       </div>
     </div>
   </section>
 );
 
 export default Problem;
+

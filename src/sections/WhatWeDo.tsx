@@ -3,62 +3,98 @@ import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 
 const isIsNot = [
-  ['A document compiler and infrastructure layer', 'A legal advice platform or chatbot'],
-  ['API-first — every capability accessible to developers', 'A locked SaaS that you can\'t extend or integrate'],
-  ['Professionally structured, widely acceptable format', 'Court-certified or legally guaranteed documents'],
-  ['AI-assisted structuring with human accountability', 'AI making legal decisions on your behalf'],
-  ['Open source — community-owned and extensible', 'A black-box product you\'re dependent on'],
+  { is: 'A document compiler & infra layer', isNot: 'A legal advice platform or chatbot' },
+  { is: 'API-first — extensible for devs', isNot: 'A locked-in, third-party SaaS' },
+  { is: 'Structured, widely accepted formats', isNot: 'Court-certified legal representation' },
+  { is: 'Community-owned & Open Source', isNot: 'A proprietary "black box" product' },
 ];
 
 const steps = [
-  { icon: '📝', title: 'You Describe Your Problem', body: 'Fill a simple structured form — your details, what happened, what you want. No legal training required.' },
-  { icon: '⚙️', title: 'Murdock Structures It', body: 'Our AI-assisted pipeline validates, structures, and compiles your input into a legally formatted document — with human review flags on critical fields.' },
-  { icon: '📄', title: 'You Get a Ready Document', body: 'Download your PDF. Share it. Send it. The document is yours — structured to match what Indian courts and consumer forums expect.' },
+  { icon: '01', title: 'Describe', body: 'Fill a structured form about your situation. No legalese required.' },
+  { icon: '02', title: 'Compile', body: 'Our engine validates and maps your input into standard legal structures.' },
+  { icon: '03', title: 'Deliver', body: 'Download a clean, formatted PDF ready for submission or review.' },
 ];
 
 const WhatWeDo: React.FC = () => (
-  <section id="what-we-build" className="bg-navy py-24 md:py-32">
-    <div className="mx-auto max-w-[1200px] px-6 md:px-12">
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">What We Build</motion.span>
-      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-white mb-4">Not a Chatbot. Not a Law Firm. Infrastructure.</motion.h2>
-      <motion.p {...reveal} className="font-body text-[19px] leading-[1.8] max-w-[640px] mb-16" style={{ color: 'rgba(255,255,255,0.72)' }}>
-        Murdock is the engineering layer between a citizen's problem and a professionally structured legal document. We compile. We validate. We deliver. You stay in control — always.
-      </motion.p>
+  <section id="what-we-build" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+    {/* Decorative radial gradient */}
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(201,147,58,0.03)_0%,transparent_70%)] pointer-events-none" />
 
-      <motion.div {...reveal} className="glass-dark max-w-[780px] mx-auto mb-20 overflow-hidden">
-        <div className="grid grid-cols-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <span className="font-body font-medium text-[14px] text-gold uppercase tracking-[0.08em]">Murdock IS</span>
-          <span className="font-body font-medium text-[14px] uppercase tracking-[0.08em]" style={{ color: 'rgba(255,255,255,0.45)' }}>Murdock IS NOT</span>
-        </div>
-        {isIsNot.map(([is, isNot], i) => (
-          <div key={i} className="grid grid-cols-2 px-6 py-4" style={{ borderBottom: i < isIsNot.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-            <span className="font-body font-medium text-[16px] text-white pr-4">{is}</span>
-            <span className="font-body text-[15px] pr-4" style={{ color: 'rgba(255,255,255,0.45)' }}>{isNot}</span>
-          </div>
-        ))}
-      </motion.div>
-
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-8 text-center">How It Works</motion.span>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 relative">
-        <div className="hidden md:block absolute top-1/2 left-[33%] right-[33%] h-px border-t-2 border-dashed border-gold/40 -translate-y-1/2 z-0" aria-hidden="true" />
-        {steps.map((s, i) => (
-          <motion.div key={s.title} {...reveal} transition={{ ...revealTransition, delay: i * 0.15 }} className="glass-dark p-7 text-center relative z-10">
-            <div className="text-3xl mb-4">{s.icon}</div>
-            <h3 className="font-body font-medium text-[22px] text-white mb-2">{s.title}</h3>
-            <p className="font-body text-[17px] leading-[1.75]" style={{ color: 'rgba(255,255,255,0.72)' }}>{s.body}</p>
-          </motion.div>
-        ))}
+    <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
+      <div className="text-center max-w-[800px] mx-auto mb-20 space-y-6">
+        <motion.div {...reveal} className="flex items-center justify-center gap-3">
+          <div className="h-[1px] w-6 bg-gold/50" />
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.3em] text-gold/80">Infrastructure, Not Advice</span>
+        </motion.div>
+        
+        <motion.h2 
+          {...reveal} 
+          transition={{ ...revealTransition, delay: 0.1 }}
+          className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+        >
+          Built for compilers. Not for chatbots.
+        </motion.h2>
+        
+        <motion.p 
+          {...reveal} 
+          transition={{ ...revealTransition, delay: 0.2 }}
+          className="font-body text-[18px] text-white/60 leading-relaxed"
+        >
+          Murdock is the engineering layer between a citizen's problem and a professionally structured legal document. We provide the engine. You remain the lawyer.
+        </motion.p>
       </div>
 
-      <motion.div {...reveal} className="py-8 text-center" style={{ background: 'rgba(201,147,58,0.1)', borderTop: '1px solid rgba(201,147,58,0.3)', borderBottom: '1px solid rgba(201,147,58,0.3)' }}>
-        <p className="font-display italic text-[18px] md:text-[22px] max-w-[700px] mx-auto px-6" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          "If adding a new legal domain requires touching the core pipeline, the architecture has failed. The pipeline must be a dumb pipe. Modules must be smart plugins."
-        </p>
-        <span className="font-body font-medium text-[13px] text-gold mt-4 block">— The Golden Rule of Murdock</span>
+      {/* Comparison Grid */}
+      <motion.div 
+        {...reveal} 
+        transition={{ ...revealTransition, delay: 0.3 }}
+        className="glass-dark border border-white/5 rounded-3xl overflow-hidden max-w-[900px] mx-auto mb-24"
+      >
+        <div className="grid grid-cols-2 bg-white/[0.02] border-b border-white/5 py-5 px-8">
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-gold">Murdock IS</span>
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-white/30">Murdock IS NOT</span>
+        </div>
+        <div className="divide-y divide-white/5">
+          {isIsNot.map((item, i) => (
+            <div key={i} className="grid grid-cols-2 py-6 px-8 hover:bg-white/[0.01] transition-colors">
+              <span className="font-body font-medium text-[16px] text-white pr-4">{item.is}</span>
+              <span className="font-body text-[15px] text-white/30 pr-4">{item.isNot}</span>
+            </div>
+          ))}
+        </div>
       </motion.div>
+
+      {/* Process Section */}
+      <div className="space-y-12">
+        <motion.span 
+          {...reveal} 
+          className="font-body font-bold text-[11px] uppercase tracking-[0.4em] text-gold/60 block text-center"
+        >
+          The Compiler Flow
+        </motion.span>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {steps.map((s, i) => (
+            <motion.div 
+              key={s.title} 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: i * 0.15 + 0.5 }} 
+              className="relative p-8 glass-light border border-white/5 rounded-2xl hover:border-gold/20 transition-all group"
+            >
+              <span className="font-mono text-[42px] font-bold text-white/5 absolute top-4 right-6 group-hover:text-gold/5 transition-colors">{s.icon}</span>
+              <div className="space-y-4">
+                <h3 className="font-display text-[22px] font-bold text-white group-hover:text-gold transition-colors">{s.title}</h3>
+                <p className="font-body text-[15px] leading-relaxed text-white/50">{s.body}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+
     </div>
   </section>
 );
 
 export default WhatWeDo;
+

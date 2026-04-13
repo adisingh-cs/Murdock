@@ -1,67 +1,126 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { reveal } from '../lib/animations';
+import { reveal, revealTransition } from '../lib/animations';
 
 const techStack = [
-  { name: 'Node.js + TypeScript', desc: 'Type-safe API orchestration and pipeline control', icon: '🟢' },
-  { name: 'Python + FastAPI', desc: 'Isolated AI microservice — independently scalable', icon: '🐍' },
-  { name: 'PostgreSQL + Drizzle ORM', desc: 'Schema-versioned document storage with full audit trail', icon: '🐘' },
-  { name: 'Docker + Compose', desc: 'One-command dev and production environment', icon: '🐳' },
+  { 
+    name: 'TypeScript', 
+    desc: 'Strictly typed infra orchestration', 
+    icon: <img src="https://skillicons.dev/icons?i=ts" className="h-6 w-6" alt="TypeScript" />
+  },
+  { 
+    name: 'FastAPI', 
+    desc: 'High-performance AI isolation', 
+    icon: <img src="https://skillicons.dev/icons?i=fastapi" className="h-6 w-6" alt="FastAPI" />
+  },
+  { 
+    name: 'PostgreSQL', 
+    desc: 'Secure document state audit trail', 
+    icon: <img src="https://skillicons.dev/icons?i=postgres" className="h-6 w-6" alt="PostgreSQL" />
+  },
+  { 
+    name: 'Docker', 
+    desc: 'Standardized infra deployment', 
+    icon: <img src="https://skillicons.dev/icons?i=docker" className="h-6 w-6" alt="Docker" />
+  },
 ];
 
-const pipelineSteps = ['Input Normalization', 'Module Routing', 'AI Structuring', 'Schema Validation', 'Template Selection', 'Output Generation', 'Storage & Audit'];
-const aiProviders = ['OpenAI GPT-4o', 'Anthropic Claude', 'Google Gemini', 'Ollama (Self-hosted)'];
+const pipelineSteps = [
+  { name: 'Normalization', info: 'Converting messy inputs to standard JSON' },
+  { name: 'Module Routing', info: 'Directing data to specific law engines' },
+  { name: 'AI Structuring', info: 'Mapping facts to legal clauses' },
+  { name: 'Schema Validation', info: 'Ensuring 100% legal compliance' },
+  { name: 'Template Engine', info: 'Dynamic professional formatting' },
+  { name: 'Storage & Audit', info: 'Immutable history of document state' },
+];
 
 const TechFoundation: React.FC = () => (
-  <section id="tech" className="bg-white py-24 md:py-32">
-    <div className="mx-auto max-w-[1200px] px-6 md:px-12">
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">The Foundation</motion.span>
-      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-navy mb-4">Production-Grade From Day One.</motion.h2>
-      <motion.p {...reveal} className="font-body text-[19px] leading-[1.8] text-slate max-w-[640px] mb-16">
-        Murdock is not a prototype. It is architected as a long-term platform — schema-versioned, AI-provider-agnostic, fully containerized, and designed to scale from 10 to 10 million documents without a rewrite.
-      </motion.p>
+  <section id="tech" className="relative bg-navy py-24 md:py-32 overflow-hidden border-t border-white/5">
+    {/* Background accent */}
+    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
+    
+    <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
+      <div className="grid lg:grid-cols-2 gap-20 items-center">
+        
+        <div className="space-y-8">
+          <motion.div {...reveal} className="flex items-center gap-3">
+            <div className="h-[1px] w-6 bg-gold/50" />
+            <span className="font-body font-bold text-[11px] uppercase tracking-[0.3em] text-gold/80">The Core Engine</span>
+          </motion.div>
+          
+          <motion.h2 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.1 }}
+            className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+          >
+            Production-Grade <br />Infrastructure.
+          </motion.h2>
+          
+          <motion.p 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.2 }}
+            className="font-body text-[18px] text-white/50 leading-relaxed max-w-[540px]"
+          >
+            Murdock is built to handle complexity. We've architected a modular pipeline that isolates AI processing from business logic, ensuring reliability and full auditability.
+          </motion.p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        <motion.div {...reveal} className="grid grid-cols-1 sm:grid-cols-2 gap-0">
-          {techStack.map((t, i) => (
-            <div key={t.name} className="p-6" style={{ borderBottom: i < 2 ? '1px solid hsl(var(--warm-gray))' : 'none', borderRight: i % 2 === 0 ? '1px solid hsl(var(--warm-gray))' : 'none' }}>
-              <span className="text-xl mb-2 block">{t.icon}</span>
-              <h4 className="font-body font-medium text-[15px] text-navy mb-1">{t.name}</h4>
-              <p className="font-body text-[13px] text-slate">{t.desc}</p>
-            </div>
-          ))}
-        </motion.div>
+          <div className="grid sm:grid-cols-2 gap-6 pt-4">
+            {techStack.map((t, i) => (
+              <motion.div 
+                key={t.name}
+                {...reveal}
+                transition={{ ...revealTransition, delay: i * 0.1 + 0.3 }}
+                className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-gold/30 transition-all"
+              >
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center font-mono text-[11px] text-white/40 mb-4 group-hover:text-gold transition-colors">{t.icon}</div>
+                <h4 className="font-body font-bold text-[15px] text-white mb-2">{t.name}</h4>
+                <p className="font-body text-[13px] text-white/30 leading-relaxed">{t.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
-        <motion.div {...reveal} className="glass-light p-8">
-          <span className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-6">7-Step Document Pipeline</span>
-          <div className="space-y-0">
+        <motion.div 
+          {...reveal}
+          transition={{ ...revealTransition, delay: 0.5 }}
+          className="relative glass-dark p-8 md:p-12 border border-white/10 rounded-3xl"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent opacity-50" />
+          <h4 className="relative z-10 font-body font-bold text-[10px] uppercase tracking-[0.3em] text-gold/60 mb-10">Document Lifecycle Pipeline</h4>
+          
+          <div className="relative z-10 space-y-0">
             {pipelineSteps.map((step, i) => (
-              <div key={step} className="flex items-start gap-4">
+              <div key={step.name} className="flex gap-6 group">
                 <div className="flex flex-col items-center">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-body font-medium shrink-0 ${i === 2 ? 'bg-gold text-navy' : 'bg-navy text-white'}`}>{i + 1}</div>
-                  {i < pipelineSteps.length - 1 && <div className="w-px h-6 border-l border-dashed border-warm-gray" />}
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 bg-navy font-mono text-[12px] text-white/40 group-hover:bg-gold group-hover:text-navy group-hover:border-gold transition-all duration-300">
+                    {i + 1}
+                  </div>
+                  {i < pipelineSteps.length - 1 && (
+                    <div className="w-[1px] h-12 bg-gradient-to-b from-white/10 to-transparent my-1" />
+                  )}
                 </div>
-                <div className="pb-4 flex items-center gap-2">
-                  <span className={`font-body font-medium text-[15px] ${i === 2 ? 'text-gold' : 'text-navy'}`}>{step}</span>
-                  {i === 2 && <span className="px-2 py-0.5 rounded-full text-[11px] font-body font-medium bg-brand-green/10 text-brand-green border border-brand-green/30">Circuit breaker protected</span>}
+                <div className="pt-1.5 pb-8">
+                  <h5 className="font-body font-bold text-[15px] text-white group-hover:text-gold transition-colors">{step.name}</h5>
+                  <p className="font-body text-[13px] text-white/30 leading-relaxed">{step.info}</p>
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
-      </div>
 
-      <motion.div {...reveal} className="text-center">
-        <span className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-2">AI Provider Abstraction</span>
-        <p className="font-body text-[17px] text-slate mb-6 max-w-[500px] mx-auto">Murdock never locks you into one AI model. Switch between providers at runtime — no restart required.</p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {aiProviders.map((p) => (
-            <motion.span key={p} className="px-4 py-2 rounded-full font-body font-medium text-[14px] text-navy bg-white border border-warm-gray cursor-default" whileHover={{ borderColor: '#C9933A' }}>{p}</motion.span>
-          ))}
-        </div>
-      </motion.div>
+          <div className="mt-8 pt-8 border-t border-white/5">
+            <div className="flex flex-wrap gap-3">
+              {['GPT-4o', 'Claude 3.5', 'Gemini Pro', 'Llama 3'].map(model => (
+                <span key={model} className="px-3 py-1 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-white/30">{model}</span>
+              ))}
+            </div>
+            <p className="mt-4 font-body text-[11px] italic text-white/20">Agnostic provider layer with automatic failover.</p>
+          </div>
+        </motion.div>
+
+      </div>
     </div>
   </section>
 );
 
 export default TechFoundation;
+

@@ -3,52 +3,125 @@ import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 
 const modules = [
-  { icon: '🧾', title: 'Consumer Complaints', law: 'Consumer Protection Act, 2019', types: ['Refund Not Received', 'Defective Product', 'Service Not Rendered', 'Overcharging'], output: 'Formal complaint letter + Legal notice · PDF, Text, HTML' },
-  { icon: '🏠', title: 'Rental Disputes', law: 'Transfer of Property Act 1882 · State Rent Control Acts · RERA', types: ['Security Deposit', 'Illegal Eviction', 'Rent Increase', 'Maintenance Neglect'], output: 'Formal dispute notice · PDF, Text, HTML' },
+  { 
+    id: 'M-01',
+    title: 'Consumer Protection', 
+    law: 'Consumer Protection Act, 2019', 
+    tags: ['Refunds', 'Defects', 'Overcharging'], 
+    output: 'Legal Notice · Forum Complaint · Response Letter',
+    color: 'bg-gold/10'
+  },
+  { 
+    id: 'M-02',
+    title: 'Housing & Rent', 
+    law: 'Rent Control Act · RERA · TP Act', 
+    tags: ['Deposits', 'Eviction', 'Maintenance'], 
+    output: 'Demand Notice · Vacation Letter · Lease Addendum',
+    color: 'bg-white/5'
+  },
 ];
 
-const roadmap = ['Employment', 'Banking & UPI Fraud', 'E-Commerce', 'Real Estate', 'Insurance', 'Telecom', 'Government RTI'];
+const planned = [
+  'Employment Hub', 'UPI & Cyber Fraud', 'E-Commerce Shield', 
+  'Insurance Claims', 'Telecom Disputes', 'RTI Automator'
+];
 
 const Modules: React.FC = () => (
-  <section className="bg-navy py-24 md:py-32">
-    <div className="mx-auto max-w-[1200px] px-6 md:px-12">
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">What's Possible</motion.span>
-      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-white mb-4">Two Modules Today. An Entire Legal Stack Tomorrow.</motion.h2>
-      <motion.p {...reveal} className="font-body text-[19px] leading-[1.8] max-w-[640px] mb-16" style={{ color: 'rgba(255,255,255,0.72)' }}>
-        v1 launches with consumer complaints and rental disputes — the two most common legal needs for Indian citizens. The plugin architecture means every new legal domain is a module. Zero changes to the core.
-      </motion.p>
+  <section id="modules" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+    <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
+      
+      <div className="grid lg:grid-cols-12 gap-16 items-end mb-20">
+        <div className="lg:col-span-12 xl:col-span-7 space-y-6">
+          <motion.div {...reveal} className="flex items-center gap-3">
+            <div className="h-[1px] w-6 bg-gold/50" />
+            <span className="font-body font-bold text-[11px] uppercase tracking-[0.3em] text-gold/80">The Plugin Ecosystem</span>
+          </motion.div>
+          <motion.h2 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.1 }}
+            className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+          >
+            Two Domains Today. <br />The <span className="text-gold">Entire Stack</span> Tomorrow.
+          </motion.h2>
+        </div>
+        <div className="lg:col-span-12 xl:col-span-5">
+          <motion.p 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 0.2 }}
+            className="font-body text-[18px] text-white/50 leading-relaxed"
+          >
+            v1 launches with the most critical pain points for Indian citizens. Our architecture treats every new law as a module. Zero core changes required.
+          </motion.p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+      <div className="grid md:grid-cols-2 gap-8 mb-24">
         {modules.map((m, i) => (
-          <motion.div key={m.title} {...reveal} transition={{ ...revealTransition, delay: i * 0.1 }} className="glass-dark p-7 border-t-[3px] border-t-gold">
-            <span className="inline-block px-3 py-1 rounded-full text-[12px] font-body font-medium bg-brand-green text-white mb-4">Live in v1</span>
-            <div className="text-2xl mb-3">{m.icon}</div>
-            <h3 className="font-body font-medium text-[22px] text-white mb-1">{m.title}</h3>
-            <p className="font-body text-[14px] text-gold mb-4">{m.law}</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {m.types.map((t) => <span key={t} className="px-2.5 py-1 rounded-full text-[12px] font-body text-white/70" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>{t}</span>)}
+          <motion.div 
+            key={m.title} 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: i * 0.15 + 0.3 }} 
+            className="group relative p-1 bg-white/[0.03] border border-white/5 rounded-3xl hover:border-gold/30 transition-all duration-500 overflow-hidden"
+          >
+            <div className="p-10 space-y-6">
+              <div className="flex justify-between items-start">
+                <span className="font-mono text-[11px] font-bold text-gold tracking-widest uppercase">{m.id}</span>
+                <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">v1 Standard</span>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="font-display text-[28px] font-bold text-white group-hover:text-gold transition-colors">{m.title}</h3>
+                <p className="font-body text-[13px] text-white/40 font-medium tracking-wide">{m.law}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {m.tags.map(t => (
+                  <span key={t} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] text-white/60 font-medium">
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                <span className="font-body text-[12px] text-white/30 uppercase tracking-widest font-bold">Supported Outputs:</span>
+                <span className="font-body text-[12px] text-gold/80 font-medium">{m.output}</span>
+              </div>
             </div>
-            <p className="font-body text-[14px]" style={{ color: 'rgba(255,255,255,0.55)' }}>{m.output}</p>
           </motion.div>
         ))}
       </div>
 
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-6">On the Roadmap</motion.span>
-      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
-        {roadmap.map((r) => (
-          <motion.div key={r} {...reveal} className="shrink-0 snap-start glass-dark px-6 py-5 min-w-[180px] opacity-70">
-            <span className="font-body font-medium text-[15px] text-white block mb-2">{r}</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-body text-gold border border-gold/50">Planned</span>
-          </motion.div>
-        ))}
-        <motion.div {...reveal} className="shrink-0 snap-start px-6 py-5 min-w-[180px] rounded-2xl opacity-50" style={{ border: '1px dashed rgba(255,255,255,0.3)' }}>
-          <span className="text-2xl block mb-2 text-white">+</span>
-          <span className="font-body font-medium text-[15px] text-white block">Your Module →</span>
-          <span className="font-body text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Any developer can add a new legal domain</span>
+      {/* Roadmap Section */}
+      <div className="space-y-10">
+        <motion.div {...reveal} className="flex items-center gap-4">
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.4em] text-gold/60">Development Roadmap</span>
+          <div className="h-px flex-1 bg-white/5" />
         </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {planned.map((p, i) => (
+            <motion.div 
+              key={p} 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: i * 0.05 + 0.6 }}
+              className="px-6 py-5 glass-light border border-white/5 rounded-2xl flex items-center justify-between opacity-50 hover:opacity-100 transition-opacity group"
+            >
+              <span className="font-body text-[14px] font-bold text-white group-hover:text-gold transition-colors">{p}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-gold/50" />
+            </motion.div>
+          ))}
+          <motion.div 
+            {...reveal} 
+            transition={{ ...revealTransition, delay: 1.0 }}
+            className="px-6 py-5 border border-dashed border-white/10 rounded-2xl flex items-center justify-center group cursor-pointer hover:border-gold/50 transition-colors"
+          >
+            <span className="font-body text-[14px] font-bold text-white/30 group-hover:text-gold transition-colors">Your Module +</span>
+          </motion.div>
+        </div>
       </div>
     </div>
   </section>
 );
 
 export default Modules;
+

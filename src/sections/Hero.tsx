@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
+import DocumentCardVisual from '../components/DocumentCardVisual';
 
 const AshokaChakra = () => (
-  <svg width="600" height="600" viewBox="0 0 600 600" className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04]" aria-hidden="true">
+  <svg width="800" height="800" viewBox="0 0 600 600" className="absolute right-[-10%] top-[-10%] opacity-[0.03] scale-150 pointer-events-none" aria-hidden="true">
     {Array.from({ length: 24 }).map((_, i) => (
       <line key={i} x1="300" y1="300" x2={300 + 280 * Math.cos((i * 15 * Math.PI) / 180)} y2={300 + 280 * Math.sin((i * 15 * Math.PI) / 180)} stroke="white" strokeWidth="1" />
     ))}
@@ -12,74 +13,80 @@ const AshokaChakra = () => (
   </svg>
 );
 
-const techLogos = ['Node.js', 'PostgreSQL', 'Docker', 'Python', 'FastAPI'];
-
 const Hero: React.FC = () => {
   const scrollToNext = () => {
-    document.querySelector('#problem')?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.querySelector('#problem');
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   };
 
   return (
-    <section className="relative min-h-screen flex items-center bg-navy overflow-hidden">
+    <section className="relative h-screen min-h-[600px] flex items-center bg-navy overflow-hidden pt-20 md:pt-24">
       <AshokaChakra />
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'rgba(201,147,58,0.12)', filter: 'blur(120px)', animation: 'blob-drift 8s ease-in-out infinite alternate' }} aria-hidden="true" />
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'rgba(46,74,122,0.5)', filter: 'blur(140px)', animation: 'blob-drift 8s ease-in-out infinite alternate-reverse' }} aria-hidden="true" />
+      
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none opacity-20" 
+           style={{ background: 'radial-gradient(circle, rgba(201,147,58,0.3) 0%, transparent 70%)', filter: 'blur(80px)', animation: 'float 10s ease-in-out infinite' }} />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full pointer-events-none opacity-20" 
+           style={{ background: 'radial-gradient(circle, rgba(46,74,122,0.4) 0%, transparent 70%)', filter: 'blur(100px)', animation: 'float 12s ease-in-out infinite reverse' }} />
 
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6 md:px-12 py-32 md:py-0 w-full">
-        <div className="max-w-[700px]">
-          <motion.div {...reveal} transition={{ ...revealTransition, delay: 0.2 }} className="flex items-center gap-2 mb-6">
-            <span className="w-2 h-2 rounded-full bg-brand-green inline-block" style={{ animation: 'pulse-dot 2s infinite' }} />
-            <span className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold">Open Source · API-First · Built for India</span>
-          </motion.div>
+      <div className="relative z-10 mx-auto max-w-[1280px] px-6 md:px-12 py-10 lg:py-0 w-full">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center">
+          
+          {/* Left Column: Content */}
+          <div className="flex flex-col space-y-8 max-w-[640px] lg:-translate-y-12">
 
-          <motion.h1 {...reveal} transition={{ ...revealTransition, delay: 0.4 }} className="font-display font-bold text-[38px] md:text-[64px] text-white leading-tight mb-6">
-            Every Indian Deserves a <span className="text-gold">Fighting Chance</span> in Their Own Legal System.
-          </motion.h1>
-
-          <motion.p {...reveal} transition={{ ...revealTransition, delay: 0.6 }} className="font-body text-[19px] leading-[1.8] max-w-[580px] mb-6" style={{ color: 'rgba(255,255,255,0.72)' }}>
-            Murdock is open-source infrastructure that turns complex legal processes into structured, ready-to-use documents — for citizens, lawyers, businesses, and developers across India. No jargon. No gatekeeping. Just access.
-          </motion.p>
-
-          <motion.div {...reveal} transition={{ ...revealTransition, delay: 0.8 }} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-8" style={{ border: '1px solid rgba(201,147,58,0.4)', background: 'rgba(201,147,58,0.08)' }}>
-            <span className="font-body text-[12px]" style={{ color: 'rgba(255,255,255,0.55)' }}>⚖ Structured documents — not legal advice. Always reviewed by you.</span>
-          </motion.div>
-
-          <motion.div {...reveal} transition={{ ...revealTransition, delay: 1.0 }} className="flex flex-wrap gap-3.5 mb-14">
-            <motion.button
-              onClick={() => document.querySelector('#partner-form')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-gold text-navy font-body font-bold text-[16px] px-7 py-3.5 rounded-[10px]"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
+            <motion.h1 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: 0.1 }} 
+              className="text-[48px] md:text-[68px] font-display font-bold text-white leading-[1.05] tracking-tight"
             >
-              Fund or Partner With Us
-            </motion.button>
-            <motion.a
-              href="https://github.com/adisingh-cs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body font-medium text-[16px] text-white px-6 py-3.5 rounded-[10px] inline-block"
-              style={{ border: '1px solid rgba(255,255,255,0.3)' }}
-              whileHover={{ borderColor: '#C9933A', color: '#C9933A' }}
-            >
-              Explore on GitHub →
-            </motion.a>
-          </motion.div>
+              A fighting chance in <span className="text-gold italic font-normal">your</span> legal system.
+            </motion.h1>
 
-          <motion.div {...reveal} transition={{ ...revealTransition, delay: 1.3 }}>
-            <p className="font-body text-[12px] uppercase tracking-[0.08em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>Built with trusted open-source infrastructure</p>
-            <div className="flex flex-wrap items-center gap-7">
-              {techLogos.map((t) => <span key={t} className="font-mono text-[14px] text-white/40">{t}</span>)}
-            </div>
+            <motion.p 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: 0.2 }} 
+              className="font-body text-[18px] md:text-[20px] leading-[1.6] text-white/70 max-w-[540px]"
+            >
+              Building the API-first infrastructure that turns complex laws into structured, ready-to-use documents. Built for a generation that demands access, not gatekeeping.
+            </motion.p>
+
+            <motion.div 
+              {...reveal} 
+              transition={{ ...revealTransition, delay: 0.3 }} 
+              className="flex flex-wrap gap-4 pt-4"
+            >
+              <motion.button
+                onClick={() => document.querySelector('#partner-form')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-gold text-navy font-body font-bold text-[15px] px-10 py-4 rounded-xl shadow-xl shadow-gold/10 transition-shadow hover:shadow-gold/20 flex items-center gap-2"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Contact
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14m-7-7 7 7-7 7" />
+                </svg>
+              </motion.button>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Visual */}
+          <motion.div 
+            className="flex justify-center lg:justify-end lg:scale-90"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+          >
+            <DocumentCardVisual />
           </motion.div>
         </div>
       </div>
-
-      <button onClick={scrollToNext} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-label="Scroll to explore">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9933A" strokeWidth="2" strokeLinecap="round" style={{ animation: 'bounce-chevron 2s infinite' }}><path d="M6 9l6 6 6-6" /></svg>
-        <span className="font-body text-[12px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Scroll to explore</span>
-      </button>
     </section>
   );
 };
 
 export default Hero;
+
