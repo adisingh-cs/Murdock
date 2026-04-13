@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
+import ParticleBackground from '../components/ParticleBackground';
 
 
 const Hero: React.FC = () => {
@@ -14,8 +15,9 @@ const Hero: React.FC = () => {
 
   return (
     <section className="relative h-screen min-h-[600px] flex items-center bg-[#050505] overflow-hidden pt-20 md:pt-24 group">
+      <ParticleBackground particleCount={800} />
       {/* Refined Background Treatment */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#050505] to-[#101010] opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#050505] to-[#101010] opacity-90 z-0" />
       
       {/* User Requested Interactive Overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
