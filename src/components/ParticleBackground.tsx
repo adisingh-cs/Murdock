@@ -17,9 +17,19 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef<number>();
   const mouse = useRef({ x: 0, y: 0 });
+  const isVisible = useRef(true);
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    // VISIBILITY OBSERVER
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible.current = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(containerRef.current);
 
     // SCENE SETUP
     const scene = new THREE.Scene();
@@ -31,46 +41,45 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     );
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: false, // Turned off for performance as count increased
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capped slightly lower for better perf
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
 
     // PARTICLES
     const geo = new THREE.BufferGeometry();
     const posArray = new Float32Array(particleCount * 3);
-    const velocityArray = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount * 3; i++) {
-      // Position
       posArray[i] = (Math.random() - 0.5) * 15;
-      // Velocity
-      velocityArray[i] = (Math.random() - 0.5) * 0.01;
     }
 
     geo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
     // Create circular texture for particles
     const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = 32; // Smaller canvas for textures
+    canvas.height = 32;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
       gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-      gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+      gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.4)');
       gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.fillRect(0, 0, 32, 32);
     }
     const texture = new THREE.CanvasTexture(canvas);
 
     const mat = new THREE.PointsMaterial({
-      size: 0.05,
+      size: 0.08,
       color: new THREE.Color(color),
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.5,
       map: texture,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -96,30 +105,27 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     };
     window.addEventListener('resize', handleResize);
 
-    // PARALLAX ON SCROLL
     let scrollY = 0;
     const handleScroll = () => {
       scrollY = window.scrollY;
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ANIMATION LOOP
     const animate = () => {
       requestRef.current = requestAnimationFrame(animate);
 
-      // Subtle rotation
-      particles.rotation.y += 0.001 * speed;
-      particles.rotation.x += 0.0005 * speed;
+      if (!isVisible.current) return;
 
-      // Mouse reaction
+      particles.rotation.y += 0.0008 * speed;
+      particles.rotation.x += 0.0004 * speed;
+
       if (interactive) {
-        particles.position.x += (mouse.current.x * 0.5 - particles.position.x) * 0.05;
-        // Combine mouse movement and parallax
-        const targetY = (mouse.current.y * 0.5) - (scrollY * 0.002);
-        particles.position.y += (targetY - particles.position.y) * 0.05;
+        particles.position.x += (mouse.current.x * 0.4 - particles.position.x) * 0.03;
+        const targetY = (mouse.current.y * 0.4) - (scrollY * 0.0015);
+        particles.position.y += (targetY - particles.position.y) * 0.03;
       } else {
-        // Fallback for non-interactive mode parallax
-        particles.position.y = -(scrollY * 0.002);
+        particles.position.y = -(scrollY * 0.001);
       }
 
       renderer.render(scene, camera);
@@ -133,11 +139,13 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
-      if (containerRef.current) {
+      observer.disconnect();
+      if (containerRef.current && renderer.domElement.parentNode) {
         containerRef.current.removeChild(renderer.domElement);
       }
       geo.dispose();
       mat.dispose();
+      texture.dispose();
       renderer.dispose();
     };
   }, [particleCount, color, speed, interactive]);

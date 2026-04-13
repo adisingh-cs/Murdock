@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
             >
               <GitHubIcon className="w-4 h-4 text-text-muted group-hover:text-gold transition-colors" />
               <span className="text-[11px] uppercase tracking-wider">Coming Soon</span>
-              <span className="text-gold opacity-50 text-[10px]">●</span>
+              <span className="text-emerald-500 opacity-80 text-[10px]">●</span>
             </motion.a>
 
             {/* CTA Button */}

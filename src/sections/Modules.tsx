@@ -107,7 +107,7 @@ const Modules: React.FC = () => (
               className="px-6 py-5 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between opacity-50 hover:opacity-100 transition-opacity group"
             >
               <span className="font-body text-[14px] font-bold text-text-primary group-hover:text-gold transition-colors">{p}</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-gold/50" />
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)] transition-colors" />
             </motion.div>
           ))}
           <motion.div 

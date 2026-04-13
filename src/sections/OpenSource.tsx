@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
+import { GitHubIcon } from '../components/SocialIcons';
 
 const contributionTypes = [
   { title: 'Legal Modules', who: 'Developers', desc: 'Add new laws with a simple JSON + Schema approach.' },
@@ -94,7 +95,7 @@ const OpenSource: React.FC = () => (
               rel="noopener noreferrer" 
               className="inline-flex items-center gap-3 px-6 py-3 bg-text-primary text-background rounded-full font-body font-bold text-[13px] hover:bg-gold transition-all duration-300"
             >
-              <img src="https://skillicons.dev/icons?i=github" className="w-5 h-5" alt="GitHub" />
+              <GitHubIcon className="w-5 h-5" />
               Follow on GitHub
             </a>
           </motion.div>
