@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 import { GitHubIcon, LinkedInIcon, XIcon, InstagramIcon, MailIcon } from '../components/SocialIcons';
+import Magnetic from '../components/Magnetic';
+import TiltCard from '../components/TiltCard';
 
 const intents = [
   { emoji: '💰', title: 'Fund the Vision', body: 'Investors and grant-makers backing open legal infrastructure.' },
@@ -43,7 +45,7 @@ const PartnerForm: React.FC = () => {
   };
 
   return (
-    <section id="partner-form" className="relative bg-background py-24 md:py-32 overflow-hidden">
+    <section id="partner-form" className="relative bg-transparent py-24 md:py-32 overflow-hidden">
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -139,13 +141,15 @@ const PartnerForm: React.FC = () => {
                       <textarea id="message" name="message" rows={4} placeholder="Tell us how we can collaborate..." className={inputClass} />
                     </div>
 
-                    <motion.button 
-                      type="submit" 
-                      className="w-full bg-text-primary text-background font-body font-bold text-[15px] py-5 rounded-xl hover:bg-gold transition-all duration-300"
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Send Inquiry
-                    </motion.button>
+                    <Magnetic>
+                      <motion.button 
+                        type="submit" 
+                        className="w-full bg-text-primary text-background font-body font-bold text-[15px] py-5 rounded-xl hover:bg-gold transition-all duration-300"
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Send Inquiry
+                      </motion.button>
+                    </Magnetic>
                   </form>
                 </motion.div>
               ) : (

@@ -1,10 +1,24 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
+import Magnetic from '../components/Magnetic';
 import ParticleBackground from '../components/ParticleBackground';
 
 
 const Hero: React.FC = () => {
+  const { scrollY } = useScroll();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -100]);
+
   const scrollToNext = () => {
     const el = document.querySelector('#problem');
     if (el) {
@@ -14,10 +28,10 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center bg-[#050505] overflow-hidden pt-20 md:pt-24 group">
-      <ParticleBackground particleCount={800} />
+    <section className="relative min-h-screen flex items-center bg-transparent overflow-hidden pt-32 pb-20 md:pt-24 md:pb-0 group">
+      <ParticleBackground />
       {/* Refined Background Treatment */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#050505] to-[#101010] opacity-90 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/20 to-transparent opacity-40 z-0" />
       
       {/* User Requested Interactive Overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
@@ -33,41 +47,38 @@ const Hero: React.FC = () => {
             <motion.h1 
               {...reveal} 
               transition={{ ...revealTransition, delay: 0.1 }} 
-              className="text-[48px] md:text-[68px] font-display font-bold text-text-primary leading-[1.05] tracking-tight"
+              className="text-[34px] sm:text-[40px] md:text-[68px] font-display font-bold text-text-primary leading-[1.2] md:leading-[1.05] tracking-tight"
             >
-              A fighting chance in <span className="text-gold italic font-normal">your</span> legal system.
+              A fighting chance in <br className="md:hidden" /> <span className="text-gold italic font-normal">your</span> legal system.
             </motion.h1>
 
             <motion.p 
               {...reveal} 
               transition={{ ...revealTransition, delay: 0.2 }} 
-              className="font-body text-[18px] md:text-[20px] leading-[1.6] text-text-secondary max-w-[540px]"
+              className="font-body text-[16px] md:text-[20px] leading-[1.6] text-text-secondary max-w-full md:max-w-[540px]"
             >
               Building the API-first infrastructure that turns complex laws into structured, ready-to-use documents. Built for a generation that demands access, not gatekeeping.
             </motion.p>
 
             <motion.div 
-              {...reveal} 
-              transition={{ ...revealTransition, delay: 0.3 }} 
-              className="flex flex-wrap gap-4 pt-4"
+              className="flex flex-col sm:flex-row gap-4 pt-6"
+              {...reveal}
             >
-              <motion.button
-                onClick={() => document.querySelector('#partner-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-gold text-background font-body font-bold text-[15px] px-10 py-4 rounded-xl shadow-xl shadow-gold/10 transition-shadow hover:shadow-gold/20 flex items-center gap-2"
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Contact
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14m-7-7 7 7-7 7" />
-                </svg>
-              </motion.button>
+              <Magnetic>
+                <button className="w-full sm:w-auto px-10 py-5 bg-gold text-black font-bold rounded-full hover:bg-gold-light transition-all duration-300 shadow-[0_0_20px_rgba(201,147,58,0.3)]">
+                  Get Started
+                </button>
+              </Magnetic>
+              <button className="w-full sm:w-auto px-10 py-5 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-full transition-all duration-300">
+                Watch Demo
+              </button>
             </motion.div>
           </div>
 
           {/* Right Column: Visual */}
           <motion.div 
-            className="flex justify-center lg:justify-end"
+            className="flex justify-center lg:justify-end mt-10 lg:mt-0"
+            style={{ y: isMobile ? 0 : y2 }}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.4 }}

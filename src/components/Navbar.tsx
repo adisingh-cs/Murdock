@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Logo from './Logo';
 import { GitHubIcon } from './SocialIcons';
+import Magnetic from './Magnetic';
 
 const navLinks = [
   { label: 'The Problem', href: '#problem' },
@@ -12,14 +13,22 @@ const navLinks = [
 ];
 
 const Navbar: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
+  const navScale = useTransform(scrollY, [0, 50], [1, 0.95]);
+  const navY = useTransform(scrollY, [0, 50], [0, 10]);
+  const navBg = useTransform(
+    scrollY,
+    [0, 50],
+    ["rgba(10, 10, 10, 0)", "rgba(10, 10, 10, 0.8)"]
+  );
+  const navBorder = useTransform(
+    scrollY,
+    [0, 50],
+    ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.1)"]
+  );
+  const navPadding = useTransform(scrollY, [0, 50], ["24px", "16px"]);
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
@@ -33,16 +42,19 @@ const Navbar: React.FC = () => {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-8 md:px-12 ${
-          scrolled ? 'pt-5 pb-6' : 'pt-6 pb-12'
-        }`}
-        style={{
-          background: scrolled ? 'rgba(10, 10, 10, 0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
-        }}
+        className="fixed top-0 left-0 right-0 z-50 px-4 md:px-12 pointer-events-none"
+        style={{ y: navY, scale: navScale }}
       >
-        <div className="mx-auto max-w-[1240px] flex items-center justify-between px-6 md:px-12">
+        <motion.div 
+          className="mx-auto max-w-[1240px] flex items-center justify-between px-5 md:px-8 py-4 rounded-2xl border pointer-events-auto"
+          style={{ 
+            backgroundColor: navBg, 
+            borderColor: navBorder,
+            backdropFilter: "blur(12px)",
+            paddingTop: navPadding,
+            paddingBottom: navPadding,
+          }}
+        >
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="shrink-0 transition-transform hover:scale-[1.02] active:scale-[0.98]">
             <Logo height={32} white />
           </button>
@@ -76,14 +88,16 @@ const Navbar: React.FC = () => {
             </motion.a>
 
             {/* CTA Button */}
-            <motion.button
-              onClick={() => scrollTo('#partner-form')}
-              className="bg-gold text-background font-body font-bold text-[12px] uppercase tracking-[0.15em] px-6 py-2.5 rounded-lg shadow-lg shadow-gold/10"
-              whileHover={{ scale: 1.05, backgroundColor: '#D49F45' }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Partnership
-            </motion.button>
+            <Magnetic strength={0.2}>
+              <motion.button
+                onClick={() => scrollTo('#partner-form')}
+                className="bg-gold text-background font-body font-bold text-[12px] uppercase tracking-[0.15em] px-6 py-2.5 rounded-lg shadow-lg shadow-gold/10"
+                whileHover={{ scale: 1.05, backgroundColor: '#D49F45' }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Partnership
+              </motion.button>
+            </Magnetic>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -100,7 +114,7 @@ const Navbar: React.FC = () => {
               )}
             </svg>
           </button>
-        </div>
+        </motion.div>
       </motion.nav>
 
       {/* Mobile Sidebar */}

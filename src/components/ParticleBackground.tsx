@@ -9,9 +9,9 @@ interface ParticleBackgroundProps {
 }
 
 const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
-  particleCount = 1500,
+  particleCount = 800,
   color = '#C9933A',
-  speed = 0.5,
+  speed = 0.4,
   interactive = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,10 +67,10 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     const texture = new THREE.CanvasTexture(canvas);
 
     const mat = new THREE.PointsMaterial({
-      size: 0.04,
+      size: 0.05,
       color: new THREE.Color(color),
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.6,
       map: texture,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -145,7 +145,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0 pointer-events-none z-[1]" 
+      className="absolute inset-0 pointer-events-none z-0" 
       style={{ opacity: 1 }}
     />
   );

@@ -1,7 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 import { GitHubIcon, LinkedInIcon, XIcon, InstagramIcon, MailIcon } from '../components/SocialIcons';
+import Magnetic from '../components/Magnetic';
+import TiltCard from '../components/TiltCard';
 
 const socials = [
   { icon: GitHubIcon, href: 'https://github.com/adisingh-cs', label: 'GitHub' },
@@ -11,7 +12,12 @@ const socials = [
   { icon: MailIcon, href: 'mailto:adisingh.cs@gmail.com', label: 'Email' },
 ];
 
-const Founder: React.FC = () => (
+const Founder: React.FC = () => {
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.05]);
+
+  return (
   <section id="founder" className="relative bg-background py-24 md:py-32 overflow-hidden border-t border-white/5">
     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
       <div className="grid lg:grid-cols-12 gap-16 items-center">
@@ -22,15 +28,17 @@ const Founder: React.FC = () => (
             className="relative p-1 bg-gradient-to-b from-gold/20 to-transparent rounded-3xl"
           >
             <div className="bg-background p-10 md:p-12 rounded-[inherit] space-y-8">
-              <div className="relative aspect-square rounded-3xl overflow-hidden bg-white/[0.02] border border-white/10 group">
-                <div className="absolute inset-0 bg-gold/10 mix-blend-overlay group-hover:opacity-0 transition-opacity duration-700" />
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 group"
+              >
                 <img 
                   src="/aditya-singh.webp" 
                   alt="Aditya Singh" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
-              </div>
+              </motion.div>
               <div className="space-y-4">
                 <div className="text-left">
                   <h3 className="font-display font-bold text-[28px] text-text-primary text-left">Aditya Singh</h3>
@@ -43,17 +51,18 @@ const Founder: React.FC = () => (
               </p>
 
               <div className="pt-8 border-t border-white/5 flex gap-5">
-                {socials.map((s) => (
-                  <a 
-                    key={s.label} 
-                    href={s.href} 
-                    target={s.href.startsWith('mailto') ? undefined : '_blank'} 
-                    rel="noopener noreferrer" 
-                    aria-label={s.label}
-                    className="group"
-                  >
-                    <s.icon className="w-5 h-5 text-text-muted group-hover:text-gold transition-colors" />
-                  </a>
+                 {socials.map((s) => (
+                  <Magnetic key={s.label} strength={0.3}>
+                    <a 
+                      href={s.href} 
+                      target={s.href.startsWith('mailto') ? undefined : '_blank'} 
+                      rel="noopener noreferrer" 
+                      aria-label={s.label}
+                      className="group block p-2"
+                    >
+                      <s.icon className="w-5 h-5 text-text-muted group-hover:text-gold transition-colors" />
+                    </a>
+                  </Magnetic>
                 ))}
               </div>
             </div>
@@ -95,6 +104,7 @@ const Founder: React.FC = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default Founder;

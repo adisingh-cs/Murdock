@@ -27,7 +27,7 @@ const planned = [
 ];
 
 const Modules: React.FC = () => (
-  <section id="modules" className="relative bg-background py-24 md:py-32 overflow-hidden">
+  <section id="modules" className="relative bg-transparent py-24 md:py-32 overflow-hidden">
     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
       
       <div className="grid lg:grid-cols-12 gap-16 items-end mb-20">

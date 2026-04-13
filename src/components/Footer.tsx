@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative bg-background border-t border-white/5 pt-24 pb-12 overflow-hidden">
+    <footer className="relative bg-transparent border-t border-white/5 pt-24 pb-12 overflow-hidden">
       <div className="mx-auto max-w-[1240px] px-6 md:px-12">
         
         <div className="grid lg:grid-cols-12 gap-16 mb-24">

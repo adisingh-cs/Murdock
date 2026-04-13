@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
-import ParticleBackground from '../components/ParticleBackground';
 
 const NotFound: React.FC = () => {
   const navigate = useNavigate();
@@ -15,8 +14,7 @@ const NotFound: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
-      <ParticleBackground particleCount={2000} speed={0.8} />
+    <div className="min-h-screen bg-transparent flex items-center justify-center relative overflow-hidden">
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none z-0" />
       

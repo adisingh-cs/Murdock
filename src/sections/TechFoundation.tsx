@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
+import TiltCard from '../components/TiltCard';
+import Magnetic from '../components/Magnetic';
 
 const techStack = [
   { 
@@ -35,7 +37,7 @@ const pipelineSteps = [
 ];
 
 const TechFoundation: React.FC = () => (
-  <section id="tech" className="relative bg-background py-24 md:py-32 overflow-hidden border-t border-white/5">
+  <section id="tech" className="relative bg-transparent py-24 md:py-32 overflow-hidden border-t border-white/5">
     {/* Background accent */}
     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
     
@@ -66,16 +68,17 @@ const TechFoundation: React.FC = () => (
 
           <div className="grid sm:grid-cols-2 gap-6 pt-4">
             {techStack.map((t, i) => (
-              <motion.div 
-                key={t.name}
-                {...reveal}
-                transition={{ ...revealTransition, delay: i * 0.1 + 0.3 }}
-                className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-gold/30 transition-all duration-500"
-              >
-                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center font-mono text-[11px] text-text-muted mb-4 group-hover:text-gold transition-colors">{t.icon}</div>
-                <h4 className="font-display font-bold text-[16px] text-text-primary mb-2 group-hover:text-gold transition-all">{t.name}</h4>
-                <p className="font-body text-[13px] text-text-muted leading-relaxed">{t.desc}</p>
-              </motion.div>
+              <TiltCard key={t.name}>
+                <motion.div 
+                  {...reveal}
+                  transition={{ ...revealTransition, delay: i * 0.1 + 0.3 }}
+                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-gold/30 transition-all duration-500 h-full"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center font-mono text-[11px] text-text-muted mb-4 group-hover:text-gold transition-colors">{t.icon}</div>
+                  <h4 className="font-display font-bold text-[16px] text-text-primary mb-2 group-hover:text-gold transition-all">{t.name}</h4>
+                  <p className="font-body text-[13px] text-text-muted leading-relaxed">{t.desc}</p>
+                </motion.div>
+              </TiltCard>
             ))}
           </div>
         </div>

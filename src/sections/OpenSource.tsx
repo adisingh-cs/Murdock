@@ -48,7 +48,7 @@ const CodeSnippet: React.FC = () => (
 );
 
 const OpenSource: React.FC = () => (
-  <section id="open-source" className="relative bg-background py-24 md:py-32 overflow-hidden border-t border-white/5">
+  <section id="open-source" className="relative bg-secondary py-24 md:py-32 overflow-hidden border-t border-white/5">
     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
       <div className="grid lg:grid-cols-12 gap-16 items-start">
         
