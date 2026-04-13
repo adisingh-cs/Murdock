@@ -1,12 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
-const reveal = {
-  initial: { opacity: 0, y: 32 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-};
+import { reveal, revealTransition } from '../lib/animations';
 
 const isIsNot = [
   ['A document compiler and infrastructure layer', 'A legal advice platform or chatbot'],
@@ -25,17 +19,12 @@ const steps = [
 const WhatWeDo: React.FC = () => (
   <section id="what-we-build" className="bg-navy py-24 md:py-32">
     <div className="mx-auto max-w-[1200px] px-6 md:px-12">
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">
-        What We Build
-      </motion.span>
-      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-white mb-4">
-        Not a Chatbot. Not a Law Firm. Infrastructure.
-      </motion.h2>
+      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-3">What We Build</motion.span>
+      <motion.h2 {...reveal} className="font-display font-bold text-[30px] md:text-[42px] text-white mb-4">Not a Chatbot. Not a Law Firm. Infrastructure.</motion.h2>
       <motion.p {...reveal} className="font-body text-[19px] leading-[1.8] max-w-[640px] mb-16" style={{ color: 'rgba(255,255,255,0.72)' }}>
         Murdock is the engineering layer between a citizen's problem and a professionally structured legal document. We compile. We validate. We deliver. You stay in control — always.
       </motion.p>
 
-      {/* IS / IS NOT table */}
       <motion.div {...reveal} className="glass-dark max-w-[780px] mx-auto mb-20 overflow-hidden">
         <div className="grid grid-cols-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <span className="font-body font-medium text-[14px] text-gold uppercase tracking-[0.08em]">Murdock IS</span>
@@ -49,22 +38,12 @@ const WhatWeDo: React.FC = () => (
         ))}
       </motion.div>
 
-      {/* How It Works */}
-      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-8 text-center">
-        How It Works
-      </motion.span>
+      <motion.span {...reveal} className="font-body font-medium text-[13px] uppercase tracking-[0.12em] text-gold block mb-8 text-center">How It Works</motion.span>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 relative">
-        {/* Connector lines (desktop only) */}
         <div className="hidden md:block absolute top-1/2 left-[33%] right-[33%] h-px border-t-2 border-dashed border-gold/40 -translate-y-1/2 z-0" aria-hidden="true" />
-
         {steps.map((s, i) => (
-          <motion.div
-            key={s.title}
-            {...reveal}
-            transition={{ ...reveal.transition, delay: i * 0.15 }}
-            className="glass-dark p-7 text-center relative z-10"
-          >
+          <motion.div key={s.title} {...reveal} transition={{ ...revealTransition, delay: i * 0.15 }} className="glass-dark p-7 text-center relative z-10">
             <div className="text-3xl mb-4">{s.icon}</div>
             <h3 className="font-body font-medium text-[22px] text-white mb-2">{s.title}</h3>
             <p className="font-body text-[17px] leading-[1.75]" style={{ color: 'rgba(255,255,255,0.72)' }}>{s.body}</p>
@@ -72,16 +51,7 @@ const WhatWeDo: React.FC = () => (
         ))}
       </div>
 
-      {/* Golden Rule */}
-      <motion.div
-        {...reveal}
-        className="py-8 text-center"
-        style={{
-          background: 'rgba(201,147,58,0.1)',
-          borderTop: '1px solid rgba(201,147,58,0.3)',
-          borderBottom: '1px solid rgba(201,147,58,0.3)',
-        }}
-      >
+      <motion.div {...reveal} className="py-8 text-center" style={{ background: 'rgba(201,147,58,0.1)', borderTop: '1px solid rgba(201,147,58,0.3)', borderBottom: '1px solid rgba(201,147,58,0.3)' }}>
         <p className="font-display italic text-[18px] md:text-[22px] max-w-[700px] mx-auto px-6" style={{ color: 'rgba(255,255,255,0.85)' }}>
           "If adding a new legal domain requires touching the core pipeline, the architecture has failed. The pipeline must be a dumb pipe. Modules must be smart plugins."
         </p>
