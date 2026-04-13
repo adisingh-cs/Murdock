@@ -4,69 +4,43 @@
 
 @layer base {
   :root {
-    /* Primary Palette - Refined HSL for premium feel */
-    --navy: 220 40% 12%;       /* Darker, richer navy */
-    --navy-light: 220 35% 18%;
-    --gold: 36 55% 51%;        /* Classic gold */
-    --gold-muted: 36 30% 65%;
-    --parchment: 40 25% 97%;   /* Warmer parchment */
-    --warm-gray: 30 10% 90%;
-    --brand-green: 152 40% 30%;
-    --slate: 215 15% 45%;
+    /* Core surfaces */
+    --bg-primary:      #0A0A0A;   /* near-black — main page background */
+    --bg-secondary:    #111111;   /* slightly lighter — section alternating bg */
+    --bg-tertiary:     #1A1A1A;   /* card surfaces, elevated elements */
+    --bg-card:         #161616;   /* glassmorphism card base */
 
-    --background: 40 25% 97%;
-    --foreground: 220 40% 12%;
+    /* Gold system */
+    --gold:            #C9933A;   /* primary accent — CTAs, highlights, labels */
+    --gold-light:      #E8B96A;   /* hover states on gold elements */
+    --gold-muted:      rgba(201, 147, 58, 0.15);  /* subtle gold tint on surfaces */
+    --gold-border:     rgba(201, 147, 58, 0.25);  /* gold border, non-intrusive */
+    --gold-glow:       rgba(201, 147, 58, 0.08);  /* very subtle gold ambient */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 40% 12%;
+    /* Text */
+    --text-primary:    #F5F5F5;   /* headings, primary content */
+    --text-secondary:  #A0A0A0;   /* body copy, muted text */
+    --text-muted:      #555555;   /* captions, disabled, placeholders */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 40% 12%;
+    /* Borders */
+    --border-default:  rgba(255, 255, 255, 0.06);  /* subtle dividers */
+    --border-strong:   rgba(255, 255, 255, 0.12);  /* card borders */
+    --border-gold:     rgba(201, 147, 58, 0.3);    /* gold accent borders */
 
-    --primary: 220 40% 12%;
-    --primary-foreground: 40 25% 97%;
+    /* Glassmorphism (dark version) */
+    --glass-bg:        rgba(255, 255, 255, 0.03);
+    --glass-border:    rgba(255, 255, 255, 0.07);
+    --glass-blur:      blur(20px);
 
-    --secondary: 40 25% 97%;
-    --secondary-foreground: 220 40% 12%;
-
-    --muted: 30 10% 90%;
-    --muted-foreground: 215 15% 45%;
-
-    --accent: 36 55% 51%;
-    --accent-foreground: 220 40% 12%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 30 15% 92%;
-    --input: 30 15% 92%;
-    --ring: 36 55% 51%;
-
-    --radius: 0.75rem; /* Slightly more rounded for premium feel */
-  }
-
-  .dark {
-    --background: 220 40% 10%;
-    --foreground: 40 25% 97%;
-    --card: 220 40% 12%;
-    --card-foreground: 40 25% 97%;
-    --popover: 220 40% 12%;
-    --popover-foreground: 40 25% 97%;
-    --primary: 36 55% 51%;
-    --primary-foreground: 220 40% 12%;
-    --secondary: 220 35% 18%;
-    --secondary-foreground: 40 25% 97%;
-    --muted: 220 35% 18%;
-    --muted-foreground: 215 15% 45%;
-    --accent: 36 55% 51%;
-    --accent-foreground: 220 40% 12%;
-    --border: 220 35% 18%;
-    --input: 220 35% 18%;
-    --ring: 36 55% 51%;
+    /* Status / special */
+    --green:           #4ADE80;   /* open source badge only — bright on dark */
+    --white:           #FFFFFF;
+    
+    --radius: 0.75rem; 
   }
 
   * {
-    @apply border-border;
+    border-color: var(--border-default);
     box-sizing: border-box;
   }
 
@@ -74,10 +48,12 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg-primary);
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
     font-family: 'DM Sans', system-ui, sans-serif;
     letter-spacing: -0.01em;
   }
@@ -85,16 +61,45 @@
   h1, h2, h3, .font-display {
     font-family: 'Playfair Display', serif;
     letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  ::selection {
+    background-color: rgba(201, 147, 58, 0.25);
+    color: var(--text-primary);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(201, 147, 58, 0.2);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 147, 58, 0.3);
   }
 }
 
 @layer components {
   .glass-dark {
-    @apply bg-navy/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl saturate-150;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 
   .glass-light {
-    @apply bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-2xl shadow-xl saturate-100;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
   }
 }
 

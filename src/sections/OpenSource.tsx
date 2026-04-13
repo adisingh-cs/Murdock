@@ -48,7 +48,7 @@ const CodeSnippet: React.FC = () => (
 );
 
 const OpenSource: React.FC = () => (
-  <section id="open-source" className="relative bg-navy py-24 md:py-32 overflow-hidden border-t border-white/5">
+  <section id="open-source" className="relative bg-background py-24 md:py-32 overflow-hidden border-t border-white/5">
     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
       <div className="grid lg:grid-cols-12 gap-16 items-start">
         
@@ -61,7 +61,7 @@ const OpenSource: React.FC = () => (
           <motion.h2 
             {...reveal} 
             transition={{ ...revealTransition, delay: 0.1 }}
-            className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+            className="font-display font-bold text-[36px] md:text-[52px] text-text-primary leading-tight"
           >
             Owned by <span className="text-gold italic">Everyone.</span>
           </motion.h2>
@@ -69,7 +69,7 @@ const OpenSource: React.FC = () => (
           <motion.p 
             {...reveal} 
             transition={{ ...revealTransition, delay: 0.2 }}
-            className="font-body text-[18px] text-white/50 leading-relaxed"
+            className="font-body text-[18px] text-text-secondary leading-relaxed"
           >
             Murdock is not a product you rent. It is infrastructure you can inspect, extend, and deploy. 
             The plugin system is designed so that adding a new legal domain requires zero changes to the core.
@@ -78,21 +78,21 @@ const OpenSource: React.FC = () => (
           <motion.div 
             {...reveal} 
             transition={{ ...revealTransition, delay: 0.3 }}
-            className="p-8 glass-dark border border-white/10 rounded-2xl space-y-6"
+            className="p-8 bg-white/[0.02] border border-white/5 rounded-2xl space-y-6"
           >
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-              <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-white">Private Dev Phase</span>
+              <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-primary">Private Dev Phase</span>
             </div>
             <div className="space-y-2">
-              <p className="font-body text-[14px] text-white/60">Global repository launch scheduled for Month 7.</p>
+              <p className="font-body text-[14px] text-text-muted">Global repository launch scheduled for Month 7.</p>
               <p className="font-body text-[12px] text-gold/60 font-medium">Currently accepting early-access contributors.</p>
             </div>
             <a 
               href="https://github.com/adisingh-cs" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="inline-flex items-center gap-3 px-6 py-3 bg-white text-navy rounded-full font-body font-bold text-[13px] hover:bg-gold transition-all duration-300"
+              className="inline-flex items-center gap-3 px-6 py-3 bg-text-primary text-background rounded-full font-body font-bold text-[13px] hover:bg-gold transition-all duration-300"
             >
               <img src="https://skillicons.dev/icons?i=github" className="w-5 h-5" alt="GitHub" />
               Follow on GitHub
@@ -116,13 +116,13 @@ const OpenSource: React.FC = () => (
                 key={c.title} 
                 {...reveal} 
                 transition={{ ...revealTransition, delay: i * 0.1 + 0.6 }}
-                className="group p-8 glass-light border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6"
+                className="group p-8 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-gold/30 transition-all duration-500"
               >
-                <div className="space-y-1">
-                  <h3 className="font-display text-[20px] font-bold text-white group-hover:text-gold transition-colors">{c.title}</h3>
-                  <p className="font-body text-[15px] text-white/50">{c.desc}</p>
+                <div className="space-y-1 text-left">
+                  <h3 className="font-display text-[20px] font-bold text-text-primary group-hover:text-gold transition-colors text-left">{c.title}</h3>
+                  <p className="font-body text-[15px] text-text-secondary text-left">{c.desc}</p>
                 </div>
-                <span className="px-3 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-white/40 uppercase tracking-widest group-hover:text-gold/50 transition-colors">{c.who}</span>
+                <span className="px-3 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-text-muted uppercase tracking-widest group-hover:text-gold/50 transition-colors">{c.who}</span>
               </motion.div>
             ))}
           </div>

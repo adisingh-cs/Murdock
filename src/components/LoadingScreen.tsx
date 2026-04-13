@@ -17,51 +17,46 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-navy"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
           <motion.div
+            className="flex items-center justify-center p-4"
             initial={{ opacity: 0, scale: 0.7 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <Logo variant="mark" height={80} />
+            <Logo variant="mark" height={100} />
           </motion.div>
 
-          <motion.span
-            className="mt-6 font-display font-bold text-white tracking-[0.2em] text-[28px]"
+          <motion.div
+            className="mt-4 flex flex-col items-center gap-2"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            MURDOCK
-          </motion.span>
+            <span className="font-display font-bold text-text-primary tracking-[0.25em] text-[28px]">
+              MURDOCK
+            </span>
+            <span className="font-body font-bold text-[11px] uppercase tracking-[0.4em] text-gold opacity-80">
+              Legal Infrastructure
+            </span>
+          </motion.div>
 
           <motion.div
-            className="mt-6 h-[2px] w-[200px] overflow-hidden rounded-full"
-            style={{ background: 'rgba(201,147,58,0.2)' }}
+            className="mt-8 h-[2px] w-[200px] overflow-hidden rounded-full bg-white/5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
             <motion.div
-              className="h-full bg-gold"
+              className="h-full bg-gold shadow-[0_0_10px_rgba(201,147,58,0.5)]"
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{ delay: 0.5, duration: 1.4, ease: 'linear' }}
             />
           </motion.div>
-
-          <motion.span
-            className="mt-4 font-body text-[13px]"
-            style={{ color: 'rgba(255,255,255,0.5)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            Legal Infrastructure · India
-          </motion.span>
         </motion.div>
       )}
     </AnimatePresence>

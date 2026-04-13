@@ -40,20 +40,20 @@ const AnimatedMetric: React.FC<{ value: string; label: string; prefix?: string }
   }, [spring, numericPart]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center p-8 glass-light border border-white/10 rounded-2xl w-full">
+    <div ref={ref} className="flex flex-col items-center p-8 bg-white/[0.02] border border-white/5 rounded-2xl w-full">
       <div className="flex items-baseline gap-1 mb-2">
         {prefix && <span className="text-gold font-display text-[24px] font-bold">{prefix}</span>}
-        <span className="font-display font-bold text-[42px] text-white tracking-tighter">{display}{suffix}</span>
+        <span className="font-display font-bold text-[42px] text-text-primary tracking-tighter">{display}{suffix}</span>
       </div>
-      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-white/40 font-bold text-center leading-relaxed">{label}</p>
+      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-text-muted font-bold text-center leading-relaxed">{label}</p>
     </div>
   );
 };
 
 const Problem: React.FC = () => (
-  <section id="problem" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+  <section id="problem" className="relative bg-background py-24 md:py-32 overflow-hidden">
     {/* Grid Background */}
-    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+    <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-12">
       <div className="grid lg:grid-cols-12 gap-16 items-start">
@@ -68,7 +68,7 @@ const Problem: React.FC = () => (
           <motion.h2 
             {...reveal} 
             transition={{ ...revealTransition, delay: 0.1 }}
-            className="font-display font-bold text-[36px] md:text-[52px] text-white leading-[1.1] tracking-tight"
+            className="font-display font-bold text-[36px] md:text-[52px] text-text-primary leading-[1.1] tracking-tight"
           >
             Access to law is a <span className="text-gold">luxury</span>, not a right.
           </motion.h2>
@@ -76,7 +76,7 @@ const Problem: React.FC = () => (
           <motion.p 
             {...reveal} 
             transition={{ ...revealTransition, delay: 0.2 }}
-            className="font-body text-[18px] leading-[1.7] text-white/60"
+            className="font-body text-[18px] leading-[1.7] text-text-secondary"
           >
             Imagine you bought a defective phone. The company ignored you. You have the right to file a consumer complaint — but you can't. Forms are complex, jargon is archaic, and lawyers charge ₹5,000 just for the first letter. 
             <br /><br />
@@ -91,16 +91,16 @@ const Problem: React.FC = () => (
               key={g.title} 
               {...reveal} 
               transition={{ ...revealTransition, delay: i * 0.15 + 0.3 }} 
-              className="group p-1 bg-white/5 rounded-2xl border border-white/5 hover:border-gold/30 transition-all duration-500"
+              className="group p-1 bg-white/[0.02] rounded-2xl border border-white/5 hover:border-gold/30 transition-all duration-500"
             >
               <div className="p-8 flex flex-col md:flex-row gap-6 items-start">
                 <span className="font-mono text-[14px] text-gold/40 font-bold">{g.id}</span>
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-4">
-                    <h3 className="font-display text-[22px] font-bold text-white group-hover:text-gold transition-colors">{g.title}</h3>
-                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] uppercase tracking-wider text-white/30 font-bold">{g.status}</span>
+                    <h3 className="font-display text-[22px] font-bold text-text-primary group-hover:text-gold transition-colors">{g.title}</h3>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] uppercase tracking-wider text-text-muted font-bold">{g.status}</span>
                   </div>
-                  <p className="font-body text-[15px] leading-relaxed text-white/50">{g.body}</p>
+                  <p className="font-body text-[15px] leading-relaxed text-text-secondary">{g.body}</p>
                 </div>
               </div>
             </motion.div>
@@ -109,7 +109,7 @@ const Problem: React.FC = () => (
       </div>
 
       {/* Metrics Strip */}
-      <div className="mt-24 grid md:grid-cols-3 gap-6">
+      <div className="mt-24 grid md:grid-cols-3 gap-6 text-center">
         <AnimatedMetric value="1.4B" label="Indians with near-zero affordable legal access" />
         <AnimatedMetric value="5.1Cr" label="Total cases pending in Indian courts today" />
         <AnimatedMetric value="0" prefix="₹" label="Cost to draft a valid notice with Murdock" />

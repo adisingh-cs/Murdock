@@ -16,7 +16,7 @@ const steps = [
 ];
 
 const WhatWeDo: React.FC = () => (
-  <section id="what-we-build" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+  <section id="what-we-build" className="relative bg-background py-24 md:py-32 overflow-hidden">
     {/* Decorative radial gradient */}
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(201,147,58,0.03)_0%,transparent_70%)] pointer-events-none" />
 
@@ -30,7 +30,7 @@ const WhatWeDo: React.FC = () => (
         <motion.h2 
           {...reveal} 
           transition={{ ...revealTransition, delay: 0.1 }}
-          className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+          className="font-display font-bold text-[36px] md:text-[52px] text-text-primary leading-tight"
         >
           Built for compilers. Not for chatbots.
         </motion.h2>
@@ -38,7 +38,7 @@ const WhatWeDo: React.FC = () => (
         <motion.p 
           {...reveal} 
           transition={{ ...revealTransition, delay: 0.2 }}
-          className="font-body text-[18px] text-white/60 leading-relaxed"
+          className="font-body text-[18px] text-text-secondary leading-relaxed"
         >
           Murdock is the engineering layer between a citizen's problem and a professionally structured legal document. We provide the engine. You remain the lawyer.
         </motion.p>
@@ -52,13 +52,13 @@ const WhatWeDo: React.FC = () => (
       >
         <div className="grid grid-cols-2 bg-white/[0.02] border-b border-white/5 py-5 px-8">
           <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-gold">Murdock IS</span>
-          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-white/30">Murdock IS NOT</span>
+          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-muted">Murdock IS NOT</span>
         </div>
         <div className="divide-y divide-white/5">
           {isIsNot.map((item, i) => (
             <div key={i} className="grid grid-cols-2 py-6 px-8 hover:bg-white/[0.01] transition-colors">
-              <span className="font-body font-medium text-[16px] text-white pr-4">{item.is}</span>
-              <span className="font-body text-[15px] text-white/30 pr-4">{item.isNot}</span>
+              <span className="font-body font-medium text-[16px] text-text-primary pr-4">{item.is}</span>
+              <span className="font-body text-[15px] text-text-muted pr-4">{item.isNot}</span>
             </div>
           ))}
         </div>
@@ -83,8 +83,8 @@ const WhatWeDo: React.FC = () => (
             >
               <span className="font-mono text-[42px] font-bold text-white/5 absolute top-4 right-6 group-hover:text-gold/5 transition-colors">{s.icon}</span>
               <div className="space-y-4">
-                <h3 className="font-display text-[22px] font-bold text-white group-hover:text-gold transition-colors">{s.title}</h3>
-                <p className="font-body text-[15px] leading-relaxed text-white/50">{s.body}</p>
+                <h3 className="font-display text-[22px] font-bold text-text-primary group-hover:text-gold transition-colors">{s.title}</h3>
+                <p className="font-body text-[15px] leading-relaxed text-text-secondary">{s.body}</p>
               </div>
             </motion.div>
           ))}

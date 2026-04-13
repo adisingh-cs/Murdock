@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import Hero from '../sections/Hero';
 import Problem from '../sections/Problem';
 import WhatWeDo from '../sections/WhatWeDo';
+import Showcase from '../sections/Showcase';
 import WhoItsFor from '../sections/WhoItsFor';
 import TechFoundation from '../sections/TechFoundation';
 import Modules from '../sections/Modules';
@@ -32,6 +33,7 @@ const Home: React.FC = () => {
             <Hero />
             <Problem />
             <WhatWeDo />
+            <Showcase />
             <WhoItsFor />
             <TechFoundation />
             <Modules />

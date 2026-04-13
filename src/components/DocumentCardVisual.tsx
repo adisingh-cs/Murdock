@@ -6,7 +6,7 @@ const DocumentCardVisual: React.FC = () => {
     <div className="relative w-full max-w-[380px] aspect-[4/5] mx-auto lg:mx-0">
       {/* Decorative background blobs */}
       <div className="absolute -top-12 -right-12 w-64 h-64 bg-gold/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-navy-light/40 rounded-full blur-3xl" />
+      <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-gold/5 rounded-full blur-3xl" />
 
       {/* Main Card */}
       <motion.div 
@@ -18,9 +18,9 @@ const DocumentCardVisual: React.FC = () => {
         {/* Card Header */}
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+            <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
             <div className="w-2.5 h-2.5 rounded-full bg-gold/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-brand-green/60" />
+            <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
           </div>
           <div className="px-3 py-1 rounded bg-white/5 border border-white/10 group">
             <span className="font-mono text-[10px] text-white/40 group-hover:text-gold transition-colors italic">document_v1.0.mdk</span>
@@ -32,7 +32,7 @@ const DocumentCardVisual: React.FC = () => {
           {/* Segment 1: Header Info */}
           <div className="space-y-3">
             <motion.div 
-              className="h-2 w-1/3 bg-gold/40 rounded-full"
+              className="h-2 w-1/3 bg-gold/30 rounded-full"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 1, duration: 0.8 }}
@@ -78,7 +78,7 @@ const DocumentCardVisual: React.FC = () => {
             <div className="p-4 rounded-xl border border-white/10 bg-white/5 flex flex-col gap-2">
               <span className="font-mono text-[9px] text-white/30 uppercase tracking-wider">Validation status</span>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
                 <div className="h-2 w-1/2 bg-white/10 rounded-full" />
               </div>
             </div>
@@ -115,15 +115,15 @@ const DocumentCardVisual: React.FC = () => {
         transition={{ delay: 2, duration: 1 }}
       >
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center text-[10px] text-gold font-bold">M</div>
+          <div className="w-8 h-8 rounded-full bg-background border border-gold/30 flex items-center justify-center text-[10px] text-gold font-bold">M</div>
           <div className="flex flex-col">
-            <span className="text-[11px] font-bold text-navy">Legal Engine</span>
-            <span className="text-[9px] text-navy/40">v1.2 Active</span>
+            <span className="text-[11px] font-bold text-white">Legal Engine</span>
+            <span className="text-[9px] text-white/40">v1.2 Active</span>
           </div>
         </div>
         <div className="space-y-2">
-          <div className="h-1.5 w-full bg-navy/5 rounded-full" />
-          <div className="h-1.5 w-[70%] bg-navy/5 rounded-full" />
+          <div className="h-1.5 w-full bg-white/5 rounded-full" />
+          <div className="h-1.5 w-[70%] bg-white/5 rounded-full" />
         </div>
       </motion.div>
     </div>

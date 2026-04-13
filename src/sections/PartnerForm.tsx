@@ -26,7 +26,7 @@ const socialLinks = [
   { icon: MailIcon, label: 'Direct Email', href: 'mailto:adisingh.cs@gmail.com' },
 ];
 
-const inputClass = "w-full border-b border-white/20 bg-transparent py-4 font-body text-[16px] text-white placeholder:text-white/20 transition-all duration-300 focus:outline-none focus:border-gold";
+const inputClass = "w-full border-b border-white/20 bg-transparent py-4 font-body text-[16px] text-text-primary placeholder:text-text-muted transition-all duration-300 focus:outline-none focus:border-gold";
 
 const PartnerForm: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -43,7 +43,7 @@ const PartnerForm: React.FC = () => {
   };
 
   return (
-    <section id="partner-form" className="relative bg-navy py-24 md:py-32 overflow-hidden">
+    <section id="partner-form" className="relative bg-background py-24 md:py-32 overflow-hidden">
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -60,7 +60,7 @@ const PartnerForm: React.FC = () => {
               <motion.h2 
                 {...reveal} 
                 transition={{ ...revealTransition, delay: 0.1 }}
-                className="font-display font-bold text-[36px] md:text-[52px] text-white leading-tight"
+                className="font-display font-bold text-[36px] md:text-[52px] text-text-primary leading-tight text-left"
               >
                 Let’s build the <br /><span className="text-gold italic">Future of Law.</span>
               </motion.h2>
@@ -68,25 +68,25 @@ const PartnerForm: React.FC = () => {
               <motion.p 
                 {...reveal} 
                 transition={{ ...revealTransition, delay: 0.2 }}
-                className="font-body text-[18px] text-white/50 leading-relaxed"
+                className="font-body text-[18px] text-text-secondary leading-relaxed text-left"
               >
                 Whether you're an investor, a legal professional, or a developer — 
                 let's talk about how Murdock can solve the accessibility gap together.
               </motion.p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid md:grid-cols-1 gap-4">
               {intents.map((c, i) => (
                 <motion.div 
                   key={c.title} 
                   {...reveal} 
                   transition={{ ...revealTransition, delay: i * 0.1 + 0.3 }}
-                  className="flex items-start gap-4 p-5 glass-light border border-white/5 rounded-2xl group hover:border-gold/30 transition-all duration-300"
+                  className="flex items-start gap-4 p-5 bg-white/[0.02] border border-white/5 rounded-2xl group hover:border-gold/30 transition-all duration-300"
                 >
                   <span className="text-2xl pt-1 text-gold/80">{c.emoji}</span>
-                  <div>
-                    <h3 className="font-body font-bold text-[16px] text-white group-hover:text-gold transition-colors">{c.title}</h3>
-                    <p className="font-body text-[14px] text-white/40">{c.body}</p>
+                  <div className="text-left">
+                    <h3 className="font-display font-bold text-[16px] text-text-primary group-hover:text-gold transition-colors text-left">{c.title}</h3>
+                    <p className="font-body text-[14px] text-text-muted text-left">{c.body}</p>
                   </div>
                 </motion.div>
               ))}
@@ -108,37 +108,37 @@ const PartnerForm: React.FC = () => {
                     <input type="hidden" name="form-name" value="murdock-partner-inquiry" />
                     
                     <div className="grid md:grid-cols-2 gap-8">
-                      <div className="space-y-1">
+                      <div className="space-y-1 text-left">
                         <label htmlFor="name" className="font-body font-bold text-[10px] uppercase tracking-[0.2em] text-gold/60">Full Name *</label>
                         <input id="name" name="name" required placeholder="John Doe" className={inputClass} value={name} onChange={e => setName(e.target.value)} />
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-1 text-left">
                         <label htmlFor="org" className="font-body font-bold text-[10px] uppercase tracking-[0.2em] text-gold/60">Organization *</label>
                         <input id="org" name="organisation" required placeholder="Legal Solutions Inc." className={inputClass} />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-left">
                       <label htmlFor="email" className="font-body font-bold text-[10px] uppercase tracking-[0.2em] text-gold/60">Email Address *</label>
                       <input id="email" name="email" type="email" required placeholder="john@example.com" className={inputClass} />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 text-left">
                       <label htmlFor="intent" className="font-body font-bold text-[10px] uppercase tracking-[0.2em] text-gold/60">Interest Area *</label>
-                      <select id="intent" name="intent" required className={`${inputClass} !bg-navy transition-all`} defaultValue="">
+                      <select id="intent" name="intent" required className={`${inputClass} !bg-background transition-all`} defaultValue="">
                         <option value="" disabled className="text-white/20">Select an option</option>
-                        {selectOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                        {selectOptions.map(o => <option key={o} value={o} className="bg-background text-text-primary">{o}</option>)}
                       </select>
                     </div>
 
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-left">
                       <label htmlFor="message" className="font-body font-bold text-[10px] uppercase tracking-[0.2em] text-gold/60">Message</label>
                       <textarea id="message" name="message" rows={4} placeholder="Tell us how we can collaborate..." className={inputClass} />
                     </div>
 
                     <motion.button 
                       type="submit" 
-                      className="w-full bg-white text-navy font-body font-bold text-[15px] py-5 rounded-xl hover:bg-gold transition-all duration-300"
+                      className="w-full bg-text-primary text-background font-body font-bold text-[15px] py-5 rounded-xl hover:bg-gold transition-all duration-300"
                       whileTap={{ scale: 0.98 }}
                     >
                       Send Inquiry
@@ -166,17 +166,17 @@ const PartnerForm: React.FC = () => {
                     </svg>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="font-display font-bold text-[32px] text-white">Inquiry Received.</h3>
-                    <p className="font-body text-[17px] text-white/50 max-w-[360px]">
+                    <h3 className="font-display font-bold text-[32px] text-text-primary">Inquiry Received.</h3>
+                    <p className="font-body text-[17px] text-text-secondary max-w-[360px]">
                       Thank you{name ? `, ${name.split(' ')[0]}` : ''}. I'll personally review your message and get back to you shortly.
                     </p>
                   </div>
                   
                   <div className="pt-8 border-t border-white/5 w-full grid grid-cols-2 gap-4">
                     {socialLinks.map(s => (
-                      <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="p-4 glass-light rounded-xl hover:border-gold/40 transition-all text-left space-y-2 group">
-                        <s.icon className="w-5 h-5 text-white/40 group-hover:text-gold transition-colors" />
-                        <span className="block font-body text-[11px] text-white/50 font-bold uppercase tracking-tight">{s.label}</span>
+                      <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:border-gold/40 transition-all text-left space-y-2 group">
+                        <s.icon className="w-5 h-5 text-text-muted group-hover:text-gold transition-colors" />
+                        <span className="block font-body text-[11px] text-text-muted font-bold uppercase tracking-tight">{s.label}</span>
                       </a>
                     ))}
                   </div>
