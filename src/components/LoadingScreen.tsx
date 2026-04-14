@@ -9,7 +9,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
     const timer = setTimeout(() => {
       setShow(false);
       setTimeout(onComplete, 500);
-    }, 2000);
+    }, 2500);
     return () => clearTimeout(timer);
   }, [onComplete]);
 

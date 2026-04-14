@@ -38,6 +38,11 @@ const pipelineSteps = [
 
 const TechFoundation: React.FC = () => (
   <section id="tech" className="relative bg-transparent py-24 md:py-32 overflow-hidden border-t border-white/5">
+    {/* Foundation Background Image */}
+    <div className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none">
+      <img src="/web-background.webp" alt="" className="w-full h-full object-cover" />
+    </div>
+
     {/* Background accent */}
     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
     

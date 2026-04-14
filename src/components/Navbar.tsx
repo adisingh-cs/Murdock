@@ -6,7 +6,7 @@ import Magnetic from './Magnetic';
 
 const navLinks = [
   { label: 'The Problem', href: '#problem' },
-  { label: 'Our Work', href: '#what-we-build' },
+  { label: 'Our Work', href: '#what-we-do' },
   { label: 'Foundation', href: '#tech' },
   { label: 'Open Source', href: '#open-source' },
   { label: 'Founder', href: '#founder' },

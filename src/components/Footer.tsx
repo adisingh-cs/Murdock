@@ -4,7 +4,7 @@ import { GitHubIcon, LinkedInIcon, XIcon, InstagramIcon, MailIcon } from './Soci
 
 const footerNav = [
   { label: 'Problem', href: '#problem' },
-  { label: 'Infrastructure', href: '#what-we-build' },
+  { label: 'Infrastructure', href: '#what-we-do' },
   { label: 'Tech Stack', href: '#tech' },
   { label: 'Open Source', href: '#open-source' },
   { label: 'Founder', href: '#founder' },
@@ -112,6 +112,11 @@ const Footer: React.FC = () => {
           <p className="font-body text-[12px] text-text-muted uppercase tracking-[0.1em]">
             © 2026 Murdock. Built by Aditya Singh.
           </p>
+          
+          <a href="/sitemap.xml" className="font-body text-[11px] text-text-muted uppercase tracking-[0.2em] hover:text-gold transition-colors">
+            Sitemap
+          </a>
+
           <div className="flex gap-8">
             <span className="font-body text-[11px] text-text-muted tracking-widest uppercase">India · Open Source · API-First</span>
           </div>

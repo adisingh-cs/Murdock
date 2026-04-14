@@ -153,8 +153,8 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0 pointer-events-none z-0" 
-      style={{ opacity: 1 }}
+      className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-1000 ease-out" 
+      style={{ opacity: isVisible.current ? 1 : 0 }}
     />
   );
 };

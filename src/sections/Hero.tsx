@@ -8,12 +8,20 @@ import ParticleBackground from '../components/ParticleBackground';
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
   const [isMobile, setIsMobile] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+
+    // Delay particles to avoid initial frame drop
+    const timer = setTimeout(() => setShowParticles(true), 400);
+
+    return () => {
+      window.removeEventListener('resize', check);
+      clearTimeout(timer);
+    };
   }, []);
 
   const y1 = useTransform(scrollY, [0, 500], [0, 150]);
@@ -29,7 +37,7 @@ const Hero: React.FC = () => {
 
   return (
     <section className="relative min-h-screen flex items-center bg-transparent overflow-hidden pt-28 pb-20 md:pt-24 md:pb-0 group">
-      <ParticleBackground particleCount={800} />
+      {showParticles && <ParticleBackground particleCount={800} />}
       {/* Refined Background Treatment */}
       <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/20 to-transparent opacity-40 z-0" />
       
