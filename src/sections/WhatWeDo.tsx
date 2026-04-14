@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { reveal, revealTransition } from '../lib/animations';
+import { Check, X } from 'lucide-react';
+import { reveal, revealTransition, staggerParent } from '../lib/animations';
 import TiltCard from '../components/TiltCard';
 
 const isIsNot = [
@@ -45,25 +46,87 @@ const WhatWeDo: React.FC = () => (
         </motion.p>
       </div>
 
-      {/* Comparison Grid */}
-      <motion.div 
-        {...reveal} 
-        transition={{ ...revealTransition, delay: 0.3 }}
-        className="glass-dark border border-white/5 rounded-3xl overflow-hidden max-w-[900px] mx-auto mb-24"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 bg-white/[0.02] border-b border-white/5 py-5 px-8">
-          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-gold text-left md:text-center">Murdock IS</span>
-          <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-muted mt-4 md:mt-0 text-left md:text-center">Murdock IS NOT</span>
-        </div>
-        <div className="divide-y divide-white/5">
-          {isIsNot.map((item, i) => (
-            <div key={i} className="grid grid-cols-1 md:grid-cols-2 py-6 px-8 hover:bg-white/[0.01] transition-colors gap-4 md:gap-0">
-              <span className="font-body font-medium text-[16px] text-text-primary pr-4 text-left">{item.is}</span>
-              <span className="font-body text-[15px] text-text-muted pr-4 text-left">{item.isNot}</span>
+      {/* Redesigned Comparison Section */}
+      <div className="max-w-[1000px] mx-auto mb-32 relative">
+        <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-white/10 to-transparent -translate-x-1/2" />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          {/* Murdock IS Section */}
+          <motion.div 
+            {...staggerParent}
+            className="space-y-8"
+          >
+            <div className="flex items-center gap-4 mb-10">
+              <div className="p-2.5 rounded-xl bg-gold/10 border border-gold/20">
+                <Check className="w-5 h-5 text-gold" />
+              </div>
+              <div>
+                <h3 className="font-display text-[22px] font-bold text-text-primary">Murdock Is</h3>
+                <p className="font-body text-[12px] uppercase tracking-widest text-gold/60 font-medium">The Engineering Layer</p>
+              </div>
             </div>
-          ))}
+
+            <div className="space-y-4">
+              {isIsNot.map((item, i) => (
+                <motion.div 
+                  key={i}
+                  variants={{
+                    initial: { opacity: 0, x: -20 },
+                    whileInView: { opacity: 1, x: 0 }
+                  }}
+                  transition={{ ...revealTransition, delay: i * 0.1 }}
+                  className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-gold/30 hover:bg-white/[0.04] transition-all duration-300"
+                >
+                  <div className="flex items-start gap-4">
+                    <Check className="w-5 h-5 text-gold mt-1 shrink-0" />
+                    <span className="font-body text-[16px] md:text-[17px] text-text-primary font-medium leading-snug">
+                      {item.is}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Murdock IS NOT Section */}
+          <motion.div 
+            {...staggerParent}
+            className="space-y-8"
+          >
+            <div className="flex items-center gap-4 mb-10">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                <X className="w-5 h-5 text-text-muted" />
+              </div>
+              <div>
+                <h3 className="font-display text-[22px] font-bold text-text-muted">Murdock Is Not</h3>
+                <p className="font-body text-[12px] uppercase tracking-widest text-text-muted/60 font-medium">The Final Word</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {isIsNot.map((item, i) => (
+                <motion.div 
+                  key={i}
+                  variants={{
+                    initial: { opacity: 0, x: 20 },
+                    whileInView: { opacity: 1, x: 0 }
+                  }}
+                  transition={{ ...revealTransition, delay: i * 0.1 }}
+                  className="group relative p-6 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-white/10 transition-all duration-300 opacity-60 hover:opacity-100"
+                >
+                  <div className="flex items-start gap-4">
+                    <X className="w-5 h-5 text-text-muted mt-1 shrink-0 group-hover:text-red-400 transition-colors" />
+                    <span className="font-body text-[15px] md:text-[16px] text-text-secondary leading-snug">
+                      {item.isNot}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
+
 
       {/* Process Section */}
       <div className="space-y-12">
