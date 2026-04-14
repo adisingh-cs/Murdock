@@ -1,0 +1,36 @@
+# Murdock: Legal Infrastructure for India
+
+Murdock is an API-first legal infrastructure platform designed to provide affordable legal access to 1.4 billion Indians. It bridges the "Reality Gap" in the Indian legal system where access to law is often a luxury.
+
+## Core Mission
+- **Access to Justice**: Reducing the cost of legal drafting from ₹15,000 to ₹0.
+- **Engineering-First**: Treating legal access as an infrastructure problem that can be solved with code.
+- **API-First**: Providing developers with open-source tools to build legal solutions for the common man.
+
+## Active Modules (v1)
+- **Consumer Protection**: Automated drafting for Legal Notices, Forum Complaints, and Response Letters under the Consumer Protection Act, 2019.
+- **Housing & Rent**: Jurisdiction-aware drafting for Demand Notices, Vacation Letters, and Lease Addendums (Rent Control Act, RERA).
+
+## Upcoming Modules
+- Employment Hub
+- UPI & Cyber Fraud
+- E-Commerce Shield
+- Insurance Claims
+- Telecom Disputes
+- RTI Automator
+
+## Founder & Architect
+- **Aditya Singh**: System Architect focused on open-source LawTech infrastructure.
+
+## Technical Foundation
+Murdock is built with a plugin-based architecture where every new law is treated as a module, allowing for rapid scaling across different jurisdictions and legal domains.
+
+## Target Audience
+- **Citizens**: Seeking affordable legal drafting.
+- **Developers**: Building the next generation of Indian LawTech.
+- **Partners**: Organizations looking to integrate legal infrastructure into their workflows.
+
+## Links
+- Homepage: https://murdock-v1.netlify.app/
+- LinkedIn: https://www.linkedin.com/in/adityas-ae/
+- GitHub: https://github.com/adisingh-cs

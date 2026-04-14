@@ -14,6 +14,8 @@ import OpenSource from '../sections/OpenSource';
 import Founder from '../sections/Founder';
 import PartnerForm from '../sections/PartnerForm';
 import ScrollToTop from '../components/ScrollToTop';
+import SEO from '../components/SEO';
+import Schema from '../components/Schema';
 
 const Home: React.FC = () => {
   const hasLoaded = sessionStorage.getItem('murdock_loaded');
@@ -26,6 +28,8 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <SEO />
+      <Schema />
       <AnimatePresence>{loading && <LoadingScreen onComplete={onLoadingComplete} />}</AnimatePresence>
       {!loading && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
