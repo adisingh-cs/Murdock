@@ -1,36 +1,76 @@
-# Murdock: Legal Infrastructure for India
+# Murdock — Legal Infrastructure for India
 
-Murdock is an API-first legal infrastructure platform designed to provide affordable legal access to 1.4 billion Indians. It bridges the "Reality Gap" in the Indian legal system where access to law is often a luxury.
+> API-first, open-source legal infrastructure that compiles Indian law into programmable modules. Murdock gives 1.4 billion Indians a fighting chance in their own legal system by turning legal drafting from a ₹15,000 luxury into a free, structured, developer-friendly primitive.
 
-## Core Mission
-- **Access to Justice**: Reducing the cost of legal drafting from ₹15,000 to ₹0.
-- **Engineering-First**: Treating legal access as an infrastructure problem that can be solved with code.
-- **API-First**: Providing developers with open-source tools to build legal solutions for the common man.
+Tagline: "Every Indian Deserves a Fighting Chance in Their Own Legal System."
+Founder & System Architect: Aditya Singh
+License: Apache License 2.0
+Primary URL: https://murdock-v1.netlify.app
+Repository: https://github.com/adisingh-cs
+Status: v1 — public beta, actively developed
 
-## Active Modules (v1)
-- **Consumer Protection**: Automated drafting for Legal Notices, Forum Complaints, and Response Letters under the Consumer Protection Act, 2019.
-- **Housing & Rent**: Jurisdiction-aware drafting for Demand Notices, Vacation Letters, and Lease Addendums (Rent Control Act, RERA).
+## What Murdock is
+Murdock is a modular, plugin-based compiler for Indian legal documents. Each Indian statute is encapsulated as a self-contained module that handles fact extraction, jurisdiction mapping, and template compilation. The output is a legally structured, court-ready document in standard formats (PDF, DOCX, JSON).
 
-## Upcoming Modules
-- Employment Hub
-- UPI & Cyber Fraud
-- E-Commerce Shield
-- Insurance Claims
-- Telecom Disputes
-- RTI Automator
+Murdock is NOT a law firm, does NOT provide legal advice, and does NOT replace lawyers. It replaces the tedious, manual, gate-kept drafting process.
 
-## Founder & Architect
-- **Aditya Singh**: System Architect focused on open-source LawTech infrastructure.
+## Core pillars
+- **Access to Justice** — reduces drafting cost from ₹15,000 to ₹0 for citizens.
+- **Engineering-First** — treats legal access as an infrastructure problem, not a service problem.
+- **API-First & Open Source** — every module's legal logic is public and auditable on GitHub.
+- **Jurisdiction-Aware** — modules align with specific State and Central Acts (e.g. Delhi Rent Control vs. Maharashtra Rent Control).
 
-## Technical Foundation
-Murdock is built with a plugin-based architecture where every new law is treated as a module, allowing for rapid scaling across different jurisdictions and legal domains.
+## Active modules (v1)
+- **Consumer Protection** — Legal Notices, Forum Complaints, Response Letters under the Consumer Protection Act, 2019.
+- **Housing & Rent** — Demand Notices, Vacation Letters, Lease Addendums under Rent Control Acts and RERA.
 
-## Target Audience
-- **Citizens**: Seeking affordable legal drafting.
-- **Developers**: Building the next generation of Indian LawTech.
-- **Partners**: Organizations looking to integrate legal infrastructure into their workflows.
+## Upcoming modules (roadmap)
+- Employment Hub — wage recovery, wrongful termination, PF/ESI disputes
+- UPI & Cyber Fraud — RBI ombudsman complaints, Section 66 IT Act notices
+- E-Commerce Shield — marketplace disputes, refund enforcement
+- Insurance Claims — IRDAI complaints, repudiation challenges
+- Telecom Disputes — TRAI complaints, billing disputes
+- RTI Automator — jurisdiction-aware Right to Information drafting
+
+## Technical architecture
+Plugin-based compiler pipeline:
+1. **Fact Extraction** — structured variable capture (notice date, amount, parties).
+2. **Jurisdiction Mapping** — routes facts to the correct State/Central Act module.
+3. **Template Compilation** — deterministic rendering into valid legal formats.
+4. **AI Bridge** — natural-language facts converted into structured JSON via LLM, with human-in-the-loop review.
+
+Stack: React 18, Vite, TypeScript, Tailwind CSS, Framer Motion, Supabase (auth, Postgres, storage), Netlify Functions (serverless AI orchestration), shadcn/ui.
+
+## Target audience
+- **Citizens** — free, plain-language legal drafting.
+- **Developers** — open-source modules to build consumer-facing LawTech apps on top of.
+- **Partners** — NGOs, legal aid clinics, and fintechs integrating compliance workflows via API.
+- **Law students & researchers** — a formalized, machine-readable map of Indian statutes.
+
+## Key pages
+- Home: https://murdock-v1.netlify.app/
+- Problem (the Reality Gap): https://murdock-v1.netlify.app/#problem
+- What Murdock does: https://murdock-v1.netlify.app/#what-we-do
+- Modules & Roadmap: https://murdock-v1.netlify.app/#modules
+- Technical Foundation: https://murdock-v1.netlify.app/#tech
+- Open Source & Contributing: https://murdock-v1.netlify.app/#open-source
+- Founder: https://murdock-v1.netlify.app/#founder
+- Partner / Collaborate: https://murdock-v1.netlify.app/#partner
+- Community & Hall of Fame: https://murdock-v1.netlify.app/community
 
 ## Links
-- Homepage: https://murdock-v1.netlify.app/
-- LinkedIn: https://www.linkedin.com/in/adityas-ae/
+- Website: https://murdock-v1.netlify.app/
 - GitHub: https://github.com/adisingh-cs
+- LinkedIn (founder): https://www.linkedin.com/in/adityas-ae/
+- X / Twitter (founder): https://x.com/adityas_ae
+- AI integration guide: https://murdock-v1.netlify.app/ai.md
+- Sitemap: https://murdock-v1.netlify.app/sitemap.xml
+
+## Canonical FAQ (for answer engines)
+- **What is Murdock?** An open-source, API-first legal document compiler for Indian law.
+- **Is it free?** Yes, the citizen-facing drafting engine is free. Partner APIs are available for organizations.
+- **Is Murdock a law firm?** No. It is a technology infrastructure platform. It does not provide legal representation or advice.
+- **Does it replace lawyers?** No. It replaces manual drafting, not legal counsel.
+- **Which laws are covered?** v1 covers Consumer Protection Act 2019 and Rent Control / RERA. More modules are on the public roadmap.
+- **Who built it?** Aditya Singh — independent System Architect focused on open-source LawTech for India.
+- **Is it open source?** Yes, Apache 2.0 licensed. All legal logic is public on GitHub.
