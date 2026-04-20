@@ -1,159 +1,137 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Settings, 
-  Users, 
-  Database, 
-  ShieldCheck, 
+import { NavLink, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  FileText,
+  Settings as SettingsIcon,
+  Users,
+  Database,
+  ShieldCheck,
   ExternalLink,
-  ChevronRight,
-  UserCircle,
-  PanelLeftClose,
-  PanelLeftOpen
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
+import {
+  Sidebar as ShadSidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
-const Sidebar = ({ isCollapsed, toggleSidebar }: { isCollapsed?: boolean, toggleSidebar?: () => void }) => {
+const userLinks = [
+  { title: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
+  { title: 'My Documents', icon: FileText, href: '/dashboard/documents' },
+  { title: 'Settings', icon: SettingsIcon, href: '/dashboard/settings' },
+];
+
+const adminLinks = [
+  { title: 'User Management', icon: Users, href: '/admin' },
+  { title: 'System Data', icon: Database, href: '/admin/data' },
+  { title: 'Security Logs', icon: ShieldCheck, href: '/admin/security' },
+];
+
+const AppSidebar: React.FC = () => {
   const { user } = useAuth();
   const isAdmin = user?.isAdmin;
+  const { state } = useSidebar();
+  const collapsed = state === 'collapsed';
+  const location = useLocation();
 
-  const userLinks = [
-    { title: 'Overview', icon: LayoutDashboard, href: '/dashboard' },
-    { title: 'My Documents', icon: FileText, href: '/dashboard/documents' },
-    { title: 'Settings', icon: Settings, href: '/dashboard/settings' },
-  ];
+  const isActive = (href: string) =>
+    href === '/dashboard'
+      ? location.pathname === '/dashboard'
+      : location.pathname === href || location.pathname.startsWith(href + '/');
 
-  const adminLinks = [
-    { title: 'User Management', icon: Users, href: '/admin' },
-    { title: 'System Data', icon: Database, href: '/admin/data' },
-    { title: 'Security Logs', icon: ShieldCheck, href: '/admin/security' },
-  ];
+  const renderItem = (link: { title: string; icon: any; href: string }) => {
+    const active = isActive(link.href);
+    const Icon = link.icon;
+    return (
+      <SidebarMenuItem key={link.title}>
+        <SidebarMenuButton
+          asChild
+          tooltip={link.title}
+          className={cn(
+            'relative h-11 rounded-lg transition-all',
+            active
+              ? 'bg-gold/10 text-gold font-semibold'
+              : 'text-text-secondary hover:bg-bg-tertiary hover:text-text-primary',
+          )}
+        >
+          <NavLink to={link.href} end={link.href === '/dashboard' || link.href === '/admin'}>
+            {active && (
+              <span
+                aria-hidden
+                className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gold"
+              />
+            )}
+            <Icon className={cn('h-[18px] w-[18px] shrink-0', active ? 'text-gold' : '')} />
+            <span className="truncate text-[14px]">{link.title}</span>
+          </NavLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
 
   return (
-    <aside className={cn(
-      "fixed left-0 top-0 h-screen bg-bg-secondary border-r border-border-default flex flex-col z-50 transition-all duration-300 ease-in-out",
-      isCollapsed ? "w-20" : "w-64"
-    )}>
-      <div 
-        className="p-6 border-b border-border-default flex items-center justify-between relative group/logo overflow-hidden whitespace-nowrap"
-      >
-        <a href="/" className={cn("flex items-center gap-2 outline-none transition-all duration-300", isCollapsed ? "opacity-100 group-hover/logo:opacity-0" : "opacity-100")}>
-          <Logo variant={isCollapsed ? "mark" : "full"} height={28} />
+    <ShadSidebar collapsible="icon" className="border-r border-border-default bg-bg-secondary">
+      <SidebarHeader className="border-b border-border-default px-4 py-4 bg-bg-secondary">
+        <a href="/" className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-gold rounded">
+          <Logo variant={collapsed ? 'mark' : 'full'} height={28} />
         </a>
-        
-        {isCollapsed && (
-          <button 
-            onClick={toggleSidebar}
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300"
-            title="Expand Sidebar"
-          >
-            <PanelLeftOpen className="w-5 h-5 text-text-muted hover:text-gold transition-colors" />
-          </button>
-        )}
-        
-        {!isCollapsed && toggleSidebar && (
-          <button 
-            onClick={toggleSidebar}
-            className="text-text-muted hover:text-gold transition-colors shrink-0 outline-none focus:outline-none bg-bg-tertiary p-1.5 rounded-md hover:bg-gold/10"
-            title="Collapse Sidebar"
-          >
-            <PanelLeftClose className="w-5 h-5" />
-          </button>
-        )}
-      </div>
+      </SidebarHeader>
 
-      <nav className="flex-1 p-4 space-y-8 overflow-y-auto">
-        <div>
-          <div className={cn("overflow-hidden transition-all duration-300 ease-in-out", isCollapsed ? "max-h-0 opacity-0 mb-0" : "max-h-10 opacity-100 mb-2")}>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted px-3 whitespace-nowrap">
-              General
-            </p>
-          </div>
-          <div className="space-y-1">
-            {userLinks.map((link) => (
-              <NavLink
-                key={link.title}
-                title={link.title}
-                to={link.href}
-                className={({ isActive }) => cn(
-                  "flex items-center gap-3 py-2 px-3 rounded-lg text-[14px] transition-all group overflow-hidden whitespace-nowrap",
-                  isActive 
-                    ? "bg-gold/10 text-gold font-bold shadow-[inset_0_0_0_1px_rgba(201,147,58,0.2)]" 
-                    : "text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
-                )}
-              >
-                {({ isActive }) => (
-                  <>
-                    <link.icon className={cn("w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3", isActive ? "text-gold" : "text-text-muted group-hover:text-text-primary")} />
-                    <div className={cn("flex flex-1 items-center justify-between transition-all duration-300 overflow-hidden", isCollapsed ? "opacity-0 max-w-0" : "opacity-100 max-w-[200px]")}>
-                      <span className="truncate">{link.title}</span>
-                      {link.title === 'Overview' && (
-                        <ChevronRight className="w-3 h-3 opacity-40 shrink-0" />
-                      )}
-                    </div>
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </div>
-        </div>
+      <SidebarContent className="bg-bg-secondary">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
+            General
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">{userLinks.map(renderItem)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         {isAdmin && (
-          <div>
-            <div className={cn("overflow-hidden transition-all duration-300 ease-in-out", isCollapsed ? "max-h-0 opacity-0 mb-0 mt-0" : "max-h-10 opacity-100 mb-2 mt-4")}>
-               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted px-3 whitespace-nowrap">
-                 Administrator
-               </p>
-            </div>
-            <div className="space-y-1">
-              {adminLinks.map((link) => (
-                <NavLink
-                  key={link.title}
-                  title={link.title}
-                  to={link.href}
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 py-2 px-3 rounded-lg text-[14px] transition-all group overflow-hidden whitespace-nowrap",
-                    isActive 
-                      ? "bg-gold/10 text-gold font-bold shadow-[inset_0_0_0_1px_rgba(201,147,58,0.2)]" 
-                      : "text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
-                  )}
-                >
-                  {({ isActive }) => (
-                    <>
-                      <link.icon className={cn("w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3", isActive ? "text-gold" : "text-text-muted group-hover:text-text-primary")} />
-                      <div className={cn("flex flex-1 items-center justify-between transition-all duration-300 overflow-hidden", isCollapsed ? "opacity-0 max-w-0" : "opacity-100 max-w-[200px]")}>
-                        <span className="truncate">{link.title}</span>
-                      </div>
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          </div>
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
+              Administrator
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-1">{adminLinks.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         )}
 
-        <div>
-          <div className={cn("overflow-hidden transition-all duration-300 ease-in-out", isCollapsed ? "max-h-0 opacity-0 mb-0 mt-0" : "max-h-10 opacity-100 mb-2 mt-4")}>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted px-3 whitespace-nowrap">
-              Resources
-            </p>
-          </div>
-          <div className="space-y-1">
-            <a href="/community" title="Community" className="flex items-center gap-3 py-2 px-3 rounded-lg text-[14px] text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-all group overflow-hidden whitespace-nowrap">
-              <ExternalLink className="w-5 h-5 shrink-0 text-text-muted transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 group-hover:text-text-primary" />
-              <div className={cn("flex flex-1 items-center transition-all duration-300 overflow-hidden", isCollapsed ? "opacity-0 max-w-0" : "opacity-100 max-w-[200px]")}>
-                <span className="truncate">Community</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </nav>
-    </aside>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
+            Resources
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Community"
+                  className="h-11 rounded-lg text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
+                >
+                  <a href="/community">
+                    <ExternalLink className="h-[18px] w-[18px] shrink-0" />
+                    <span className="truncate text-[14px]">Community</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </ShadSidebar>
   );
 };
 
-export default Sidebar;
+export default AppSidebar;
