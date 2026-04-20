@@ -7,8 +7,7 @@ interface LogoProps {
   white?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ variant = 'full', className = '', height = 36, white = false }) => {
-  const textColor = white ? '#FFFFFF' : '#F5F5F5';
+const Logo: React.FC<LogoProps> = ({ variant = 'full', className = '', height = 36 }) => {
   const goldColor = '#C9933A';
 
   const mark = (
@@ -29,8 +28,8 @@ const Logo: React.FC<LogoProps> = ({ variant = 'full', className = '', height = 
       {mark}
       <div className="flex flex-col">
         <span
-          className="font-display font-bold tracking-[0.12em] leading-tight"
-          style={{ color: textColor, fontSize: height * 0.45 }}
+          className="font-display font-bold tracking-[0.12em] leading-tight text-text-primary"
+          style={{ fontSize: height * 0.45 }}
         >
           MURDOCK
         </span>

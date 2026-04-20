@@ -11,19 +11,19 @@ const techStack = [
     icon: <img src="https://skillicons.dev/icons?i=ts" className="h-6 w-6" alt="TypeScript" />
   },
   { 
-    name: 'FastAPI', 
-    desc: 'High-performance AI isolation', 
-    icon: <img src="https://skillicons.dev/icons?i=fastapi" className="h-6 w-6" alt="FastAPI" />
+    name: 'Supabase Auth', 
+    desc: 'Secure identity framework', 
+    icon: <img src="https://skillicons.dev/icons?i=supabase" className="h-6 w-6" alt="Supabase" />
   },
   { 
     name: 'PostgreSQL', 
-    desc: 'Secure document state audit trail', 
+    desc: 'Secure document audit trail', 
     icon: <img src="https://skillicons.dev/icons?i=postgres" className="h-6 w-6" alt="PostgreSQL" />
   },
   { 
-    name: 'Docker', 
-    desc: 'Standardized infra deployment', 
-    icon: <img src="https://skillicons.dev/icons?i=docker" className="h-6 w-6" alt="Docker" />
+    name: 'Netlify Edge', 
+    desc: 'Scalable serverless functions', 
+    icon: <img src="https://skillicons.dev/icons?i=netlify" className="h-6 w-6" alt="Netlify" />
   },
 ];
 

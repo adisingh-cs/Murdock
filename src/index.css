@@ -4,39 +4,73 @@
 
 @layer base {
   :root {
-    /* Core surfaces */
-    --bg-primary:      #0A0A0A;   /* near-black — main page background */
-    --bg-secondary:    #111111;   /* slightly lighter — section alternating bg */
-    --bg-tertiary:     #1A1A1A;   /* card surfaces, elevated elements */
-    --bg-card:         #161616;   /* glassmorphism card base */
+    /* Core surfaces - Light Mode (Enterprise Default) */
+    --background:      #FFFFFF;
+    --foreground:      #111827;
+    --bg-primary:      #FFFFFF;
+    --bg-secondary:    #F9FAFB;
+    --bg-tertiary:     #F3F4F6;
+    --bg-card:         #FFFFFF;
 
     /* Gold system */
-    --gold:            #C9933A;   /* primary accent — CTAs, highlights, labels */
-    --gold-light:      #E8B96A;   /* hover states on gold elements */
-    --gold-muted:      rgba(201, 147, 58, 0.15);  /* subtle gold tint on surfaces */
-    --gold-border:     rgba(201, 147, 58, 0.25);  /* gold border, non-intrusive */
-    --gold-glow:       rgba(201, 147, 58, 0.08);  /* very subtle gold ambient */
+    --gold:            #C9933A;
+    --gold-light:      #E8B96A;
+    --gold-muted:      rgba(201, 147, 58, 0.1);
+    --gold-border:     rgba(201, 147, 58, 0.2);
+    --gold-glow:       rgba(201, 147, 58, 0.05);
 
     /* Text */
-    --text-primary:    #F5F5F5;   /* headings, primary content */
-    --text-secondary:  #A0A0A0;   /* body copy, muted text */
-    --text-muted:      #555555;   /* captions, disabled, placeholders */
+    --text-primary:    #111827;
+    --text-secondary:  #4B5563;
+    --text-muted:      #9CA3AF;
 
     /* Borders */
-    --border-default:  rgba(255, 255, 255, 0.06);  /* subtle dividers */
-    --border-strong:   rgba(255, 255, 255, 0.12);  /* card borders */
-    --border-gold:     rgba(201, 147, 58, 0.3);    /* gold accent borders */
+    --border-default:  #E5E7EB;
+    --border-strong:   #D1D5DB;
+    --border-gold:     rgba(201, 147, 58, 0.3);
+
+    /* Glassmorphism (light version) */
+    --glass-bg:        rgba(255, 255, 255, 0.7);
+    --glass-border:    rgba(255, 255, 255, 0.5);
+    --glass-blur:      blur(12px);
+
+    /* Status / special */
+    --green:           #4ADE80;
+    --white:           #FFFFFF;
+    
+    --radius: 0.75rem; 
+  }
+
+  .dark {
+    /* Core surfaces - Dark Mode (Original Aesthetic) */
+    --background:      #0A0A0A;
+    --foreground:      #F5F5F5;
+    --bg-primary:      #0A0A0A;
+    --bg-secondary:    #111111;
+    --bg-tertiary:     #1A1A1A;
+    --bg-card:         #161616;
+
+    /* Gold system */
+    --gold:            #C9933A;
+    --gold-light:      #E8B96A;
+    --gold-muted:      rgba(201, 147, 58, 0.15);
+    --gold-border:     rgba(201, 147, 58, 0.25);
+    --gold-glow:       rgba(201, 147, 58, 0.08);
+
+    /* Text */
+    --text-primary:    #F5F5F5;
+    --text-secondary:  #A0A0A0;
+    --text-muted:      #555555;
+
+    /* Borders */
+    --border-default:  rgba(255, 255, 255, 0.06);
+    --border-strong:   rgba(255, 255, 255, 0.12);
+    --border-gold:     rgba(201, 147, 58, 0.3);
 
     /* Glassmorphism (dark version) */
     --glass-bg:        rgba(255, 255, 255, 0.03);
     --glass-border:    rgba(255, 255, 255, 0.07);
     --glass-blur:      blur(20px);
-
-    /* Status / special */
-    --green:           #4ADE80;   /* open source badge only — bright on dark */
-    --white:           #FFFFFF;
-    
-    --radius: 0.75rem; 
   }
 
   * {

@@ -22,7 +22,7 @@ const selectOptions = [
 ];
 
 const socialLinks = [
-  { icon: GitHubIcon, label: 'Star the Repository', href: 'https://github.com/adisingh-cs' },
+  { icon: GitHubIcon, label: 'Star the Repository', href: 'https://github.com/adisingh-cs/Murdock' },
   { icon: LinkedInIcon, label: 'Connect on LinkedIn', href: 'https://www.linkedin.com/in/adityas-ae/' },
   { icon: XIcon, label: 'Follow Updates', href: 'https://x.com/adityas_ae' },
   { icon: MailIcon, label: 'Direct Email', href: 'mailto:adisingh.cs@gmail.com' },
@@ -40,7 +40,7 @@ const PartnerForm: React.FC = () => {
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as any).toString(),
+      body: new URLSearchParams(Object.fromEntries(formData) as Record<string, string>).toString(),
     }).then(() => setSubmitted(true)).catch(() => setSubmitted(true));
   };
 

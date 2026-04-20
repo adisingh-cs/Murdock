@@ -27,7 +27,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <div className="dark bg-background text-foreground min-h-screen">
       <SEO />
       <Schema />
       <AnimatePresence>{loading && <LoadingScreen onComplete={onLoadingComplete} />}</AnimatePresence>
@@ -50,7 +50,7 @@ const Home: React.FC = () => {
           <ScrollToTop />
         </motion.div>
       )}
-    </>
+    </div>
   );
 };
 

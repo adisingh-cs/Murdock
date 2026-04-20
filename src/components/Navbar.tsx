@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown, LogOut, LayoutDashboard, ShieldAlert } from "lucide-react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
-import { GitHubIcon } from './SocialIcons';
 import Magnetic from './Magnetic';
 
 const navLinks = [
@@ -13,6 +21,9 @@ const navLinks = [
 ];
 
 const Navbar: React.FC = () => {
+  const { session, user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { scrollY } = useScroll();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,25 +39,39 @@ const Navbar: React.FC = () => {
     [0, 50],
     ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.1)"]
   );
-  const navPadding = useTransform(scrollY, [0, 50], ["24px", "16px"]);
+  const navPadding = useTransform(scrollY, [0, 50], ["18px", "12px"]);
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
+    
+    if (location.pathname !== '/') {
+      navigate('/' + href);
+      return;
+    }
+
     const el = document.querySelector(href);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+      const top = el.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
     }
   };
 
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 px-4 md:px-12 pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 pointer-events-none"
         style={{ y: navY, scale: navScale }}
       >
         <motion.div 
-          className="mx-auto max-w-[1240px] flex items-center justify-between px-5 md:px-8 py-4 rounded-2xl border pointer-events-auto"
+          className="mx-auto max-w-[1020px] flex items-center justify-between px-6 md:px-8 py-3 rounded-2xl border pointer-events-auto shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
           style={{ 
             backgroundColor: navBg, 
             borderColor: navBorder,
@@ -55,12 +80,12 @@ const Navbar: React.FC = () => {
             paddingBottom: navPadding,
           }}
         >
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="shrink-0 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          <button onClick={handleLogoClick} className="shrink-0 transition-transform hover:scale-[1.02] active:scale-[0.98]">
             <Logo height={32} white />
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((l) => (
               <button
                 key={l.label}
@@ -73,31 +98,82 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="hidden lg:flex items-center gap-5">
-            {/* GitHub Pill */}
-            <motion.a
-              href="https://github.com/adisingh-cs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-body font-bold text-text-primary transition-all bg-white/[0.03] border border-white/10"
-              whileHover={{ scale: 1.05, borderColor: 'rgba(201,147,58,0.5)', background: 'rgba(255,255,255,0.08)' }}
-              aria-label="GitHub Repository"
-            >
-              <GitHubIcon className="w-4 h-4 text-text-muted group-hover:text-gold transition-colors" />
-              <span className="text-[11px] uppercase tracking-wider">Coming Soon</span>
-              <span className="text-emerald-500 opacity-80 text-[10px]">●</span>
-            </motion.a>
-
-            {/* CTA Button */}
-            <Magnetic strength={0.2}>
-              <motion.button
-                onClick={() => scrollTo('#partner-form')}
-                className="bg-gold text-background font-body font-bold text-[12px] uppercase tracking-[0.15em] px-6 py-2.5 rounded-lg shadow-lg shadow-gold/10"
-                whileHover={{ scale: 1.05, backgroundColor: '#D49F45' }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Partnership
-              </motion.button>
-            </Magnetic>
+            {/* Supabase Auth */}
+            {!session ? (
+              <div className="flex gap-2 items-center">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="font-body font-bold text-[12px] uppercase tracking-[0.15em] text-black bg-gold hover:bg-gold-light px-6 py-2.5 rounded-lg cursor-pointer transition-all shadow-[0_0_15px_rgba(201,147,58,0.2)]">
+                      Get Started
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="w-[92vw] max-w-sm sm:max-w-md bg-[#0A0A0A] border border-white/10 p-6 sm:p-8 shadow-2xl rounded-2xl flex flex-col items-center gap-4 sm:gap-6">
+                    <div className="flex flex-col items-center text-center space-y-2">
+                      <Logo height={40} white />
+                      <h2 className="text-xl sm:text-2xl font-display font-bold text-white mt-2 sm:mt-4">Welcome to Murdock</h2>
+                      <p className="text-text-muted text-xs sm:text-sm font-body">Sign in to access your dashboard.</p>
+                    </div>
+                    <div className="w-full max-w-[300px] -mt-5">
+                      <Auth
+                        supabaseClient={supabase}
+                        onlyThirdPartyProviders={true}
+                        providers={['google']}
+                        appearance={{
+                          theme: ThemeSupa,
+                          variables: {
+                            default: {
+                              colors: {
+                                brand: '#C9933A',
+                                brandAccent: '#D49F45',
+                              },
+                            },
+                          },
+                          className: {
+                            container: 'font-body',
+                            divider: 'hidden',
+                            button: '!font-bold !uppercase !tracking-wider !rounded-xl !bg-white/[0.05] !hover:bg-white/[0.1] !border !border-white/10 !text-white !transition-all !py-3 w-full',
+                          }
+                        }}
+                        redirectTo={window.location.origin + '/dashboard'}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            ) : (
+              <div className="pl-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
+                    <Avatar className="h-8 w-8 border border-white/10">
+                      <AvatarImage src={user?.user_metadata?.avatar_url} />
+                      <AvatarFallback className="bg-white/5 text-xs text-white">
+                        {user?.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[13px] font-bold font-body text-text-primary hidden sm:block">
+                      {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
+                    </span>
+                    <ChevronDown className="h-4 w-4 text-text-muted" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 bg-background border-white/10 bg-opacity-90 backdrop-blur-xl">
+                    <DropdownMenuItem className="cursor-pointer text-text-secondary hover:text-white focus:text-white font-body" onClick={() => navigate('/dashboard')}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </DropdownMenuItem>
+                    {user?.isAdmin && (
+                      <DropdownMenuItem className="cursor-pointer text-gold hover:text-gold-light focus:text-gold-light font-body" onClick={() => navigate('/admin')}>
+                        <ShieldAlert className="mr-2 h-4 w-4" />
+                        Admin Panel
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem className="cursor-pointer text-red-400 hover:text-red-300 focus:text-red-300 font-body" onClick={signOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -143,20 +219,10 @@ const Navbar: React.FC = () => {
                   {l.label}
                 </button>
               ))}
-              <div className="mt-auto space-y-4">
-                <a
-                  href="https://github.com/adisingh-cs"
-                  className="flex items-center justify-center gap-3 w-full py-4 border border-white/10 rounded-xl text-text-primary font-body bg-white/[0.02]"
-                >
-                  <GitHubIcon className="w-5 h-5 text-text-muted" />
-                  GitHub Repository
-                </a>
-                <button
-                  onClick={() => scrollTo('#partner-form')}
-                  className="w-full bg-gold text-background font-body font-bold text-[16px] py-4 rounded-xl shadow-xl shadow-gold/20"
-                >
-                  Start Partnership
-                </button>
+              <div className="mt-auto pt-8 border-t border-white/5 opacity-50">
+                <p className="font-body text-[10px] uppercase tracking-widest text-text-muted">
+                  Legal Infrastructure v1.0
+                </p>
               </div>
             </motion.div>
           </motion.div>

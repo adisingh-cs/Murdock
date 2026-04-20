@@ -3,7 +3,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { reveal, revealTransition } from '../lib/animations';
 import Magnetic from '../components/Magnetic';
 import ParticleBackground from '../components/ParticleBackground';
-
+import { GitHubIcon } from '../components/SocialIcons';
+import { ArrowUpRight } from 'lucide-react';
 
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
@@ -93,15 +94,13 @@ const Hero: React.FC = () => {
               <Magnetic>
                 <button 
                   onClick={() => {
-                    const el = document.querySelector('#partner-form');
-                    if (el) {
-                      const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
-                      window.scrollTo({ top, behavior: 'smooth' });
-                    }
+                    window.open('https://github.com/adisingh-cs/Murdock', '_blank');
                   }}
-                  className="w-full sm:w-auto px-10 py-5 bg-gold text-black font-bold rounded-full hover:bg-gold-light transition-all duration-300 shadow-[0_0_20px_rgba(201,147,58,0.3)]"
+                  className="w-full sm:w-auto px-10 py-5 bg-gold text-black font-bold rounded-full hover:bg-gold-light transition-all duration-300 shadow-[0_0_20px_rgba(201,147,58,0.3)] flex items-center justify-center gap-3"
                 >
-                  Contact
+                  <GitHubIcon className="w-5 h-5" />
+                  View on GitHub
+                  <ArrowUpRight className="w-4 h-4" />
                 </button>
               </Magnetic>
             </motion.div>

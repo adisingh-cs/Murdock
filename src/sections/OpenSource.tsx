@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { reveal, revealTransition } from '../lib/animations';
 import { GitHubIcon } from '../components/SocialIcons';
+import { ArrowUpRight } from 'lucide-react';
 
 const contributionTypes = [
   { title: 'Legal Modules', who: 'Developers', desc: 'Add new laws with a simple JSON + Schema approach.' },
@@ -83,21 +85,31 @@ const OpenSource: React.FC = () => (
           >
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-              <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-primary">Private Dev Phase</span>
+              <span className="font-body font-bold text-[11px] uppercase tracking-[0.2em] text-text-primary">Public Repository</span>
             </div>
             <div className="space-y-2">
-              <p className="font-body text-[14px] text-text-muted">Global repository launch scheduled for Month 7.</p>
-              <p className="font-body text-[12px] text-gold/60 font-medium">Currently accepting early-access contributors.</p>
+              <p className="font-body text-[14px] text-text-muted">The repository is public and open source.</p>
+              <p className="font-body text-[12px] text-gold/60 font-medium">Currently accepting contributors.</p>
             </div>
-            <a 
-              href="https://github.com/adisingh-cs" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-flex items-center gap-3 px-6 py-3 bg-text-primary text-background rounded-full font-body font-bold text-[13px] hover:bg-gold transition-all duration-300"
-            >
-              <GitHubIcon className="w-5 h-5" />
-              Follow on GitHub
-            </a>
+            <div className="flex flex-wrap gap-4">
+              <a 
+                href="https://github.com/adisingh-cs/Murdock" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center gap-3 px-6 py-3 bg-text-primary text-background rounded-full font-body font-bold text-[13px] hover:bg-gold transition-all duration-300"
+              >
+                <GitHubIcon className="w-5 h-5" />
+                View on GitHub
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+              <Link 
+                to="/community" 
+                className="inline-flex items-center gap-3 px-6 py-3 border border-white/10 text-text-primary rounded-full font-body font-bold text-[13px] hover:bg-white/5 transition-all duration-300"
+              >
+                Join the Community
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
           </motion.div>
         </div>
 

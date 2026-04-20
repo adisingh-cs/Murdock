@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { GitHubIcon, LinkedInIcon, XIcon, InstagramIcon, MailIcon } from './SocialIcons';
 
@@ -7,6 +8,7 @@ const footerNav = [
   { label: 'Infrastructure', href: '#what-we-do' },
   { label: 'Tech Stack', href: '#tech' },
   { label: 'Open Source', href: '#open-source' },
+  { label: 'Community', href: '/community' },
   { label: 'Founder', href: '#founder' },
 ];
 
@@ -25,13 +27,30 @@ const socials = [
 ];
 
 const Footer: React.FC = () => {
-  const scrollTo = (href: string) => {
+  const navigate = useNavigate();
+
+  const handleNav = (href: string) => {
     if (href.startsWith('#')) {
-      const el = document.querySelector(href);
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
-        window.scrollTo({ top, behavior: 'smooth' });
+      if (window.location.pathname !== '/') {
+        navigate('/' + href);
+        // We delay the scroll slightly if we just navigated to the home page
+        setTimeout(() => {
+          const el = document.querySelector(href);
+          if (el) {
+            const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        const el = document.querySelector(href);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
       }
+    } else {
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -73,7 +92,7 @@ const Footer: React.FC = () => {
                   {footerNav.map((l) => (
                     <li key={l.label}>
                       <button 
-                        onClick={() => scrollTo(l.href)}
+                        onClick={() => handleNav(l.href)}
                         className="font-body text-[14px] text-text-secondary hover:text-text-primary transition-colors text-left"
                       >
                         {l.label}
@@ -128,4 +147,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
