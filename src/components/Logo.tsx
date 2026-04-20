@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = ({ variant = 'full', className = '', height = 
 
   const mark = (
     <img 
-      src="/logo.png" 
+      src="/logo.webp" 
       alt="Murdock Logo" 
       style={{ height: height, width: 'auto' }}
       className="object-contain"

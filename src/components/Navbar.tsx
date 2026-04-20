@@ -219,6 +219,56 @@ const Navbar: React.FC = () => {
                   {l.label}
                 </button>
               ))}
+
+              <div className="flex flex-col gap-4 mt-4 border-t border-white/5 pt-8">
+                {session ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setMobileOpen(false);
+                        navigate('/dashboard');
+                      }}
+                      className="flex items-center gap-3 font-display font-bold text-[24px] text-text-primary hover:text-gold transition-colors"
+                    >
+                      <LayoutDashboard className="w-6 h-6" />
+                      Dashboard
+                    </button>
+                    
+                    {user?.isAdmin && (
+                      <button
+                        onClick={() => {
+                          setMobileOpen(false);
+                          navigate('/admin');
+                        }}
+                        className="flex items-center gap-3 font-display font-bold text-[24px] text-gold hover:text-gold-light transition-colors"
+                      >
+                        <ShieldAlert className="w-6 h-6" />
+                        Admin Panel
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setMobileOpen(false);
+                        signOut();
+                      }}
+                      className="flex items-center gap-3 font-display font-bold text-[24px] text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      <LogOut className="w-6 h-6" />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button className="w-full font-body font-bold text-[14px] uppercase tracking-[0.2em] text-black bg-gold hover:bg-gold-light px-8 py-4 rounded-xl transition-all shadow-[0_0_25px_rgba(201,147,58,0.3)]">
+                        Get Started
+                      </button>
+                    </DialogTrigger>
+                    {/* DialogContent already defined in Navbar, but it works globally as long as it's within the component */}
+                  </Dialog>
+                )}
+              </div>
               <div className="mt-auto pt-8 border-t border-white/5 opacity-50">
                 <p className="font-body text-[10px] uppercase tracking-widest text-text-muted">
                   Legal Infrastructure v1.0

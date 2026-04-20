@@ -6,7 +6,7 @@ import ParticleBackground from '../components/ParticleBackground';
 import { GitHubIcon } from '../components/SocialIcons';
 import { ArrowUpRight } from 'lucide-react';
 
-const Hero: React.FC = () => {
+const Hero: React.FC<{ onImageLoad?: () => void }> = ({ onImageLoad }) => {
   const { scrollY } = useScroll();
   const [isMobile, setIsMobile] = useState(false);
   const [showParticles, setShowParticles] = useState(false);
@@ -64,6 +64,7 @@ const Hero: React.FC = () => {
                 alt="Murdock Dashboard" 
                 className="w-full h-auto object-contain drop-shadow-2xl" 
                 style={{ maxHeight: isMobile ? '43vh' : 'none' }}
+                onLoad={onImageLoad}
               />
             </div>
           </motion.div>

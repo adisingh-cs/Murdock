@@ -20,6 +20,7 @@ import Schema from '../components/Schema';
 const Home: React.FC = () => {
   const hasLoaded = sessionStorage.getItem('murdock_loaded');
   const [loading, setLoading] = useState(!hasLoaded);
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   const onLoadingComplete = useCallback(() => {
     sessionStorage.setItem('murdock_loaded', '1');
@@ -30,26 +31,37 @@ const Home: React.FC = () => {
     <div className="dark bg-background text-foreground min-h-screen">
       <SEO />
       <Schema />
-      <AnimatePresence>{loading && <LoadingScreen onComplete={onLoadingComplete} />}</AnimatePresence>
-      {!loading && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-          <Navbar />
-          <main>
-            <Hero />
-            <Problem />
-            <WhatWeDo />
-            <Showcase />
-            <WhoItsFor />
-            <TechFoundation />
-            <Modules />
-            <OpenSource />
-            <Founder />
-            <PartnerForm />
-          </main>
-          <Footer />
-          <ScrollToTop />
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {loading && (
+          <LoadingScreen 
+            onComplete={onLoadingComplete} 
+            ready={heroLoaded} 
+          />
+        )}
+      </AnimatePresence>
+      
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: loading ? 0 : 1 }} 
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={loading ? "pointer-events-none h-0 overflow-hidden" : ""}
+      >
+        <Navbar />
+        <main>
+          <Hero onImageLoad={() => setHeroLoaded(true)} />
+          <Problem />
+          <WhatWeDo />
+          <Showcase />
+          <WhoItsFor />
+          <TechFoundation />
+          <Modules />
+          <OpenSource />
+          <Founder />
+          <PartnerForm />
+        </main>
+        <Footer />
+        <ScrollToTop />
+      </motion.div>
     </div>
   );
 };
