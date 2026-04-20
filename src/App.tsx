@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Community from "./pages/Community";
 import Settings from "./pages/Settings";
+import ModuleExecution from "./pages/ModuleExecution";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,14 @@ const App = () => (
                 element={
                   <RouteProtect>
                     <Settings />
+                  </RouteProtect>
+                } 
+              />
+              <Route 
+                path="/dashboard/generate/:moduleId" 
+                element={
+                  <RouteProtect>
+                    <ModuleExecution />
                   </RouteProtect>
                 } 
               />

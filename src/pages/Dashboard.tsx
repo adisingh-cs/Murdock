@@ -1,5 +1,5 @@
-import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useDashboardData, Document } from '@/hooks/useDashboardData';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,20 +11,56 @@ import DashboardGreeting from '@/components/dashboard/DashboardGreeting';
 import ModuleTile from '@/components/dashboard/ModuleTile';
 import UsageRing from '@/components/dashboard/UsageRing';
 import EmptyState from '@/components/dashboard/EmptyState';
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 const modules = [
-  { title: 'Consumer Complaint', icon: Shield, desc: 'Consumer forum & product disputes' },
-  { title: 'RTI Application', icon: FileText, desc: 'Right to Information requests' },
-  { title: 'Legal Notice', icon: AlertTriangle, desc: 'Demand letters & legal warnings' },
-  { title: 'Police Complaint / FIR', icon: Shield, desc: 'Criminal & safety reporting' },
-  { title: 'Employment Grievance', icon: Briefcase, desc: 'Workplace & labor law issues' },
-  { title: 'Rental Dispute', icon: Home, desc: 'Landlord-tenant agreements' },
-  { title: 'Banking / UPI Fraud', icon: CreditCard, desc: 'Cybercrime & financial theft' },
+  { id: 'consumer_complaint', title: 'Consumer Complaint', icon: Shield, desc: 'Consumer forum & product disputes' },
+  { id: 'rti_application', title: 'RTI Application', icon: FileText, desc: 'Right to Information requests' },
+  { id: 'legal_notice', title: 'Legal Notice', icon: AlertTriangle, desc: 'Demand letters & legal warnings' },
+  { id: 'police_complaint', title: 'Police Complaint / FIR', icon: Shield, desc: 'Criminal & safety reporting' },
+  { id: 'employment_grievance', title: 'Employment Grievance', icon: Briefcase, desc: 'Workplace & labor law issues' },
+  { id: 'rental_dispute', title: 'Rental Dispute', icon: Home, desc: 'Landlord-tenant agreements' },
+  { id: 'banking_fraud', title: 'Banking / UPI Fraud', icon: CreditCard, desc: 'Cybercrime & financial theft' },
 ];
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { documents, usage, loading } = useDashboardData();
+  const [apiKey, setApiKey] = useState('');
+  const [isSavingKey, setIsSavingKey] = useState(false);
+
+  const handleSaveApiKey = async () => {
+    if (!apiKey) return;
+    setIsSavingKey(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("No active session");
+
+      const response = await fetch('/.netlify/functions/save-api-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ provider: 'openai', apiKey })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Failed to save API Key');
+      }
+
+      toast.success('Your OpenAI API key has been securely saved.');
+      setApiKey('');
+    } catch (e: any) {
+      toast.error(e.message || 'Error saving API key');
+    } finally {
+      setIsSavingKey(false);
+    }
+  };
 
   const firstName =
     user?.user_metadata?.full_name?.split(' ')[0] ||
@@ -86,6 +122,7 @@ const Dashboard: React.FC = () => {
                       title={m.title}
                       description={m.desc}
                       icon={m.icon}
+                      onClick={() => navigate(`/dashboard/generate/${m.id}`)}
                       accent={i % 4 === 1 ? 'sage' : 'gold'}
                     />
                   ))}
@@ -179,16 +216,22 @@ const Dashboard: React.FC = () => {
                     <input
                       type="password"
                       placeholder="sk-proj-..."
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
                       className="flex-1 bg-bg-primary border border-border-default rounded-lg px-3.5 py-2.5 text-sm text-text-primary focus:border-gold/50 outline-none transition-colors"
                     />
-                    <Button className="bg-gold hover:bg-gold-light text-background font-semibold">
-                      Save
+                    <Button 
+                      onClick={handleSaveApiKey}
+                      disabled={isSavingKey || !apiKey}
+                      className="bg-gold hover:bg-gold-light text-background font-semibold"
+                    >
+                      {isSavingKey ? 'Saving...' : 'Save'}
                     </Button>
                   </div>
                 </div>
                 <div className="p-4 rounded-lg bg-sage/10 border border-sage/20">
                   <p className="text-xs text-text-secondary leading-relaxed">
-                    Keys are encrypted with AES-256 and stored locally in your browser. We never see your keys.
+                    Keys are AES-256 encrypted on our secure backend and safely stored in your account. The raw key is never transmitted to the browser after being saved.
                   </p>
                 </div>
               </CardContent>
