@@ -1,0 +1,81 @@
+🧠 1. Core Infra Concepts (Simple Cheat Sheet)
+
+🔹 Modular Design
+What it is:
+Split system into independent “law modules” so adding new features doesn’t break old ones
+
+Example:
+/modules
+/consumer
+/rental
+
+🔹 Schema-First Design
+What it is:
+Define structured data format (JSON schema) before writing logic
+
+Example:
+{
+"type": "consumer_refund",
+"company": "Flipkart",
+"amount": 2000
+}
+
+🔹 API-First Design
+What it is:
+Everything works via APIs internally, even your frontend
+
+Example:
+POST /generate-notice
+
+🔹 Versioning
+What it is:
+Keep multiple API versions so updates don’t break old integrations
+
+Example:
+/v1/generate
+/v2/generate
+
+🔹 Template Engine
+What it is:
+Predefined legal formats with placeholders
+
+Example:
+Dear {{company_name}},
+You failed to refund ₹{{amount}}...
+
+🔹 Pipeline Architecture
+What it is:
+Step-by-step processing system
+
+Flow:
+Input → JSON → Template → PDF
+
+🔹 Plugin System
+What it is:
+Allow new modules to be added without touching core
+
+Example:
+/modules/traffic_fine
+
+🔹 Separation of Concerns
+What it is:
+Keep UI, logic, and data separate
+
+Example:
+/frontend
+/backend
+/templates
+
+🔹 Idempotent APIs
+What it is:
+Same request = same result (important for legal docs)
+
+Example:
+POST /generate → same input always same notice
+
+🔹 Validation Layer
+What it is:
+Ensure input matches schema before processing
+
+Example:
+amount must be number

@@ -1,0 +1,845 @@
+MURDOCK
+Software Requirements Specification
+AI-Powered Indian Legal Document Compiler
+Document Type
+Software Requirements Specification (SRS)
+Version
+1.0.0 — Draft
+Date
+18 April 2026
+Product
+Murdock — Indian Legal Document Compiler
+Stack
+React + Vite + Netlify + Supabase + Clerk
+Confidentiality
+GitHub Private — 6 months
+1. Introduction
+1.1 Purpose
+This Software Requirements Specification (SRS) defines the complete functional, technical, and operational requirements for Murdock — an AI-powered Indian legal document compiler. It serves as the authoritative reference for all design, development, testing, and deployment decisions. This document supersedes all prior product requirement documents (PRDs).
+1.2 Product Overview
+Murdock enables Indian citizens, lawyers, businesses, and developers to generate legally structured, court-acceptable, plain-paper documents using AI assistance. Users bring their own AI provider API keys or use platform-managed keys. Documents are generated in English, Hindi, Marathi, and Gujarati. All infrastructure runs within free tiers of Netlify and Supabase to minimise operational cost.
+1.3 Scope — v1
+Version 1 covers 7 legal modules, 5 user roles, a freemium monetisation model, a full admin dashboard, async AI document generation, per-doc observability, version history for paid users, and multilingual output.
+1.4 Definitions
+Term
+Definition
+Module
+A legal document type (e.g. RTI Application, Legal Notice)
+Pre-processor
+Deterministic layer that maps raw user inputs to a structured JSON before AI processing
+Job Queue
+Async pattern: request logged to DB, processed by Background Function, UI polls for result
+Platform-managed key
+An API key owned and managed by Murdock; user does not need to supply their own
+BYOK
+Bring Your Own Key — user supplies their personal AI provider API key
+AI Review Flag
+Yellow-highlighted field in the review screen indicating AI-generated content requiring user verification
+Tier
+User plan: Free or Paid, controlled by admin per user in the dashboard
+Netlify BF
+Netlify Background Function — serverless function with up to 15-minute execution window
+RB-IOS
+Reserve Bank Integrated Ombudsman Scheme 2021 — governs banking/UPI fraud complaints
+2. Stakeholders & User Roles
+Murdock defines five distinct user roles. All roles authenticate via Clerk. Roles and feature access are controlled per-user by the admin dashboard, stored in Supabase.
+Role
+Target User
+Primary Capabilities
+Individual
+General public
+Generate docs, download DOCX, shareable expiry link, manage own AI keys
+Lawyer
+Practising advocates
+All Individual capabilities + multi-client profile management + bulk generation
+Business
+Companies / orgs
+All Individual capabilities + team member management + usage analytics per team
+Developer
+Technical users
+Paid API access to Netlify Functions — generate docs programmatically
+Admin
+Product owner (you)
+Full dashboard: control features, limits, tiers, keys, logs, rollbacks per user
+3. System Architecture
+3.1 Architecture Overview
+Murdock follows a serverless, zero-infrastructure architecture entirely within free tiers. There are no persistent servers, no Docker containers, and no managed databases beyond Supabase free tier.
+3.2 Component Stack
+Layer
+Technology
+Notes
+Frontend
+React 18 + Vite + Tailwind CSS + shadcn/ui
+Matches existing Lovable landing page stack
+Authentication
+Clerk (free tier)
+Replaces custom JWT. Handles all 5 roles, OAuth, magic link, email/password
+Backend API
+Netlify Functions (Node.js)
+Serverless, 10s timeout for sync routes. Rate-limited on all routes.
+Async Processing
+Netlify Background Functions
+Up to 15 min timeout — used for AI doc generation. Free: 125k invocations/month.
+Job Queue
+Supabase DB table (jobs)
+Request → DB row insert → BF picks up → updates status → UI polls
+Database
+Supabase PostgreSQL (free)
+500MB limit. User data, doc metadata, job queue, usage tracking, logs, versions
+Storage
+Supabase Storage (free)
+1GB limit. DOCX files for paid users only. 50MB per file max.
+AI Calls
+Netlify Function → AI Provider
+Key fetched from Supabase (decrypted), call made server-side. Key never reaches browser.
+DOCX Generation
+docx.js (client-side)
+Browser generates .docx from structured JSON after AI processing. No Puppeteer.
+Deployment
+Netlify (push to main = live)
+GitHub → Netlify CI/CD. Auto-deploy on push to main branch.
+Repo
+GitHub (private)
+Private for 6 months. Public decision at 6-month mark.
+3.3 Request Flow — Document Generation
+The following describes the complete end-to-end flow for a user generating a legal document:
+User fills intake form (module-specific fields). Auto-suggestions and pre-filled examples are shown.
+Client-side pre-processor maps form inputs to a structured JSON schema deterministically (no AI involved yet).
+User submits. Netlify Function creates a job row in Supabase (status: queued) and returns a job_id to the browser.
+Netlify Background Function picks up the job: fetches user's AI key from Supabase (AES-256 decrypted), calls AI provider with structured JSON + language-aware prompt + module template.
+AI returns structured output. Background Function validates output, maps it back to the document schema, and stores result in job row (status: complete).
+Browser polls the job status endpoint every 3 seconds ('Generating...' spinner shown). On complete, renders review screen.
+Review screen shows document with all AI-filled fields highlighted yellow. User reviews, edits directly, checks mandatory disclaimer checkbox.
+User clicks Download → docx.js generates .docx client-side. If paid, document is also saved to Supabase Storage.
+⚠ Free tier: Download only. Paid tier: Download + saved to Supabase for future access + version history.
+3.4 AI Key Management
+AI keys are the most security-sensitive data in the system. The following controls are in place:
+Keys stored in Supabase DB encrypted with AES-256. Decrypted only inside Netlify Background Function at call time.
+Keys NEVER transmitted to the browser after initial save. Masked display only (last 4 characters shown).
+Users can view masked key, view per-provider usage logs, and revoke/rotate key from Settings UI.
+Platform-managed keys (owned by Murdock) are available to all users as an alternative to BYOK. These are stored as Netlify Environment Variables — never in the DB.
+Platform-managed keys = subscription-based. You (admin) control cost by charging users via the paid tier.
+3.5 Free Tier Limits Reference
+Service
+Free Tier Limit
+Murdock Usage
+Supabase DB
+500MB storage
+User data, logs, versions, job queue
+Supabase Storage
+1GB, 50MB/file
+Paid users' saved DOCX files only
+Supabase Bandwidth
+2GB/month outbound
+File downloads by paid users
+Netlify Functions
+125,000 invocations/month
+All API routes. ~4,100/day.
+Netlify BG Functions
+125,000 invocations/month (shared)
+AI generation jobs — each doc = 1 invocation
+Netlify Bandwidth
+100GB/month
+Frontend assets + function responses
+Clerk
+10,000 MAU free
+User authentication for all roles
+4. AI System
+4.1 Supported Providers
+Murdock supports multiple AI providers via a unified provider adapter pattern. Each provider has a normalised interface — the same structured JSON input and output schema regardless of provider.
+Provider
+Key Models (Recommended)
+Notes
+OpenAI
+gpt-4o-mini, gpt-4o
+Default recommendation for most users. Cost-efficient.
+Anthropic
+claude-haiku-4-5, claude-sonnet-4-6
+High quality legal drafting. Slightly higher cost.
+Google Gemini
+gemini-1.5-flash, gemini-1.5-pro
+Good multilingual support for Hindi/Marathi/Gujarati.
+OpenRouter
+Any model via single key
+Routes to 100+ models. Good for advanced users wanting model choice.
+Groq
+llama-3.1-8b, mixtral-8x7b
+Ultra-fast inference, free tier available. Good for quick drafts.
+Custom
+User-defined endpoint
+User supplies base URL + API key. Supports any OpenAI-compatible endpoint.
+⚠ Ollama (local AI) is NOT supported in the hosted app. Ollama requires localhost access which the hosted Netlify Function cannot reach. Users wishing to use Ollama must self-host Murdock and run Ollama locally, pointing the custom provider URL to their Ollama instance.
+4.2 Pre-Processor — Deterministic Input Mapping
+Before any AI call is made, a deterministic pre-processor runs on the user's form submission. This is pure logic — no AI, no randomness. It produces a validated JSON object that is sent to the AI, reducing hallucinations and ensuring consistent outputs.
+Each module has a defined JSON schema with required fields, field types, and field-level validation rules.
+Critical fields (party names, dates, amounts, addresses, account numbers) are marked as userProvided — AI is instructed never to fill or modify these.
+AI-permissible fields (narrative sections, legal boilerplate, cause of action descriptions) are marked as aiGenerate — AI fills only these.
+Pre-processor rejects submissions with missing required fields before the job is even queued.
+Example pre-processor output (Consumer Complaint):
+{ "module": "consumer_complaint", "lang": "en", "complainant": { "name": "[USER_PROVIDED]", "address": "[USER_PROVIDED]" }, "opposite_party": { "name": "[USER_PROVIDED]", "address": "[USER_PROVIDED]" }, "purchase_date": "[USER_PROVIDED]", "purchase_amount": "[USER_PROVIDED]", "defect_description": "[AI_GENERATE]", "relief_sought": "[AI_GENERATE]", "legal_basis": "Consumer Protection Act, 2019" }
+4.3 AI Review Flags
+All fields populated by AI are highlighted yellow in the review screen. Users must visually inspect every flagged field before downloading. This is a non-skippable step — the download button is locked until the mandatory review checkbox is checked.
+Fields filled by user = white background, no flag.
+Fields generated by AI = yellow background, labelled 'AI-generated — verify before filing'.
+If user edits an AI-generated field on the review screen, the yellow flag is cleared and replaced with a green 'User-verified' indicator.
+4.4 Async Job Queue Pattern
+Standard Netlify Functions have a 10-second timeout — insufficient for complex AI calls. Netlify Background Functions support up to 15 minutes. The async pattern ensures no timeouts and better UX.
+Step 1: Regular Netlify Function receives the request, validates it, creates a job row in Supabase (status: queued), and immediately returns the job_id to the browser (< 1 second).
+Step 2: Netlify Background Function is triggered asynchronously. It processes the job (fetch key → call AI → validate output → store result). Updates job row status throughout: queued → processing → complete / failed.
+Step 3: Browser polls a lightweight status endpoint every 3 seconds. Shows a 'Generating your document...' spinner with estimated time.
+Step 4: On complete, browser fetches the result and renders the review screen. On failed, shows error with retry option.
+⚠ Job rows older than 24 hours are automatically purged by a scheduled cleanup function to conserve Supabase DB storage.
+5. Legal Modules — v1
+All 7 modules produce plain-paper documents acceptable by their respective Indian authority. No stamp paper is required for any module. Documents must be signed by hand after printing. All modules support English, Hindi, Marathi, and Gujarati output.
+⚠ Important: Murdock produces correctly structured, legally formatted drafts — not legal advice. The review disclaimer and mandatory checkbox before download make this explicit to users.
+5.1 Legal Language & Formatting Basis
+Module structure and field schemas are derived from the following authoritative sources, not from assumptions:
+Consumer Complaint: Consumer Protection Act 2019 (Sections 35, 36, 58) + NCDRC prescribed proforma and filing guidelines.
+RTI Application: RTI Act 2005 (Section 6(1)) + Central Government Form A (CAG Office format) + CIC guidelines. No prescribed format is mandatory — plain paper application with mandatory fields per Section 6(1) is sufficient.
+Legal Notice: Code of Civil Procedure 1908 (Section 80 for government, Order XXXVII for commercial) + established Indian legal drafting conventions. Standard sections: parties, cause of action, legal basis, demand, timeline, consequences.
+Police Complaint / FIR Draft: Based on standard complaint format used across Indian police stations. No statutory prescribed format — plain paper accepted. Includes all elements required under CrPC Section 154 for cognisable offences.
+Employment Grievance Letter: Industrial Disputes Act 1947 (Sections 2A, 33C, 12) + Payment of Wages Act 1936 + POSH Act 2013 (for harassment). Structured for submission to HR, Labour Commissioner, or Labour Court.
+Rental Dispute Notice: Transfer of Property Act 1882 + applicable Rent Control Acts (generic structure acceptable across states) + standard tenancy dispute conventions. No stamp required for the notice itself.
+Banking / UPI Fraud Complaint: RBI Integrated Ombudsman Scheme 2021 (RB-IOS 2021) fields + National Cyber Crime Reporting Portal (cybercrime.gov.in) complaint fields. Drafted for submission to bank, cybercrime portal (helpline 1930), and RBI Ombudsman if bank fails to resolve within 30 days.
+5.2 Module Schemas — Required Fields
+Module 1: Consumer Complaint
+Statutory basis: Consumer Protection Act 2019 — Sections 35, 36 (District Commission). No stamp paper.
+Field
+Filled By
+Notes
+Complainant full name
+User
+Mandatory
+Complainant address
+User
+Mandatory
+Opposite party name & address
+User
+Seller / service provider
+Date of purchase / transaction
+User
+Mandatory — limitation period starts here
+Amount paid (consideration)
+User
+Mandatory for jurisdiction
+Nature of defect / deficiency
+AI + User review
+AI drafts, user verifies
+Cause of action
+AI + User review
+AI drafts based on defect type
+Relief sought
+AI + User review
+Refund / replacement / compensation — AI suggests, user confirms amount
+Legal provisions invoked
+Pre-filled by system
+CPA 2019 sections auto-filled
+Date of notice
+User
+Never AI-filled
+Previous complaints to seller
+User
+Optional but recommended
+Module 2: RTI Application
+Statutory basis: RTI Act 2005, Section 6(1). Plain paper, no prescribed format. Application fee: Rs. 10 for central government (varies by state/department).
+Field
+Filled By
+Notes
+Applicant full name
+User
+Mandatory under Section 6(1)
+Applicant address
+User
+Mandatory — required for response delivery
+Name of Public Authority / PIO
+User
+Ministry / department / office
+Information sought
+User + AI assist
+AI can help structure multi-point questions clearly
+Time period for information
+User
+Date range of records sought
+Preferred response format
+User
+Photocopy / digital / inspection
+Application fee payment details
+User
+IPO / DD / cash receipt number
+BPL exemption claim
+User
+Optional — if below poverty line
+Declaration
+Pre-filled by system
+Standard RTI eligibility declaration
+Date and place
+User
+Never AI-filled
+Module 3: Legal Notice
+Statutory basis: CPC Section 80 (for government / public officer), general civil law principles for private parties. Plain paper, signed by sender (or advocate on letterhead).
+Field
+Filled By
+Notes
+Sender name, description, address
+User
+Mandatory (Section 80 CPC requirement)
+Recipient (noticee) name & address
+User
+Mandatory
+Reference number & date
+User / System
+Auto-generated ref number; date user-provided
+Subject line
+AI + User review
+AI drafts based on dispute type
+Statement of facts (numbered)
+AI + User review
+AI drafts from user's factual inputs
+Legal basis / provisions violated
+AI + System
+AI suggests applicable sections
+Relief / demand
+User + AI
+Amount / action demanded — user must confirm
+Response deadline
+User
+Typically 15 or 30 days — user sets
+Consequences of non-compliance
+AI + User review
+Standard legal language — AI drafts
+Signature line
+Pre-filled structure
+User signs physical copy
+Dispatch mode note
+Pre-filled by system
+Registered Post AD / Speed Post recommended
+Module 4: Police Complaint / FIR Draft
+Statutory basis: CrPC Section 154 (cognisable offences). Plain paper. Submitted to SHO of relevant police station. For cybercrime offences, also submitted on cybercrime.gov.in.
+Field
+Filled By
+Notes
+Complainant name, age, address
+User
+Mandatory
+Police station name
+User
+SHO of relevant jurisdiction
+Date, time, place of incident
+User
+Never AI-filled
+Nature of offence
+User
+User selects from dropdown (theft, fraud, assault, cyber, etc.)
+Accused name & description
+User
+If known; can be 'unknown'
+Narrative of incident
+AI + User review
+AI structures from user's answers into clear numbered paragraphs
+Witnesses
+User
+Names and addresses if available
+Evidence / documents available
+User
+List of supporting evidence
+Applicable IPC / BNS sections
+AI + System
+Auto-suggested based on offence type. User reviews.
+Relief sought from police
+AI + User review
+FIR registration, investigation, arrest (AI suggests, user confirms)
+Declaration of truth
+Pre-filled by system
+Standard veracity declaration
+Module 5: Employment Grievance Letter
+Statutory basis: Industrial Disputes Act 1947 (Sections 2A, 33C, 12), Payment of Wages Act 1936, POSH Act 2013. Plain paper. Addressed to HR / employer / Labour Commissioner depending on escalation level.
+Field
+Filled By
+Notes
+Employee name, designation, employee ID
+User
+Mandatory
+Employer / company name & address
+User
+Mandatory
+Date of joining
+User
+Never AI-filled
+Date of termination / incident
+User
+Never AI-filled
+Grievance type
+User
+Dropdown: wrongful termination / unpaid salary / harassment / PF denial / other
+Salary / dues amount
+User
+Never AI-filled — user enters exact amount
+Statement of facts
+AI + User review
+AI structures user's inputs into numbered factual paragraphs
+Applicable laws violated
+AI + System
+IDA 1947 / POSH Act / Payment of Wages Act — AI suggests
+Relief demanded
+User + AI
+Reinstatement / dues payment / compensation — user confirms
+Timeline for response
+User
+Typically 15 days
+Evidence list
+User
+Appointment letter, pay slips, termination letter, emails
+Module 6: Rental Dispute Notice
+Statutory basis: Transfer of Property Act 1882 + general rent dispute conventions. Plain paper. Sent to landlord or tenant depending on dispute direction. No stamp paper required for the notice itself.
+Field
+Filled By
+Notes
+Sender (landlord or tenant) name & address
+User
+Mandatory
+Recipient name & address
+User
+Mandatory
+Property address
+User
+Never AI-filled
+Monthly rent amount
+User
+Never AI-filled
+Lease start date
+User
+Never AI-filled
+Dispute type
+User
+Dropdown: non-payment / illegal eviction / property damage / deposit refund / other
+Arrears amount (if applicable)
+User
+Exact amount — never AI-filled
+Statement of dispute facts
+AI + User review
+AI structures from user inputs
+Legal basis
+AI + System
+TPA 1882 + applicable sections auto-suggested
+Demand / remedy sought
+User + AI
+Vacate / pay / repair / refund — user confirms
+Notice period
+User
+Number of days for compliance
+Module 7: Banking / UPI Fraud Complaint
+Statutory basis: RBI Integrated Ombudsman Scheme 2021 (RB-IOS 2021) + IT Act 2000 (Section 66C, 66D for cyber fraud) + cybercrime.gov.in portal format. Three-target document: bank, cybercrime portal, and RBI Ombudsman (if bank unresponsive after 30 days).
+Field
+Filled By
+Notes
+Complainant name, address, mobile, email
+User
+Mandatory
+Bank name & branch
+User
+Mandatory
+Account number / UPI ID
+User
+Never AI-filled
+Date & time of fraud transaction
+User
+Never AI-filled — exact transaction details
+Transaction amount
+User
+Never AI-filled
+Transaction ID / UTR number
+User
+Never AI-filled
+Fraud type
+User
+Dropdown: phishing / SIM swap / UPI fraud / card cloning / other
+Narrative of fraud incident
+AI + User review
+AI structures from user's answers
+Actions already taken
+User
+Called bank / submitted complaint — user fills
+Cybercrime portal complaint number
+User
+If already filed on cybercrime.gov.in
+Bank complaint reference number
+User
+From bank's grievance receipt
+Relief sought
+AI + User review
+Reversal of transaction / compensation — AI drafts, user confirms
+Applicable law sections
+AI + System
+IT Act 2000 Sections 66C, 66D + IPC sections auto-filled
+RBI Ombudsman escalation section
+System / AI
+Auto-included if bank unresponsive > 30 days flag is checked by user
+6. Multilingual Output
+6.1 Language Strategy
+Murdock supports four languages: English, Hindi, Marathi, and Gujarati. Language selection is made at the start of each document generation session. Once selected, the language governs both the document template and the AI prompt — ensuring native phrasing, not translation.
+⚠ Critical: Hindi legal terminology != English translated to Hindi. Each language has its own legally appropriate phrasing. AI is instructed to use language-native legal vocabulary, not literal translations.
+6.2 Language Implementation
+Language
+Script
+Implementation Notes
+English
+Latin
+Default. All modules fully supported. Legal terminology follows standard Indian legal English conventions.
+Hindi
+Devanagari
+Official language of Union (Article 343). Authorised for High Court use in UP, MP, Bihar, Rajasthan. Widely used in subordinate courts across India. AI prompted to use legal Hindi vocabulary (per MoLJ Hindi Legal Glossary of 65,000 terms).
+Marathi
+Devanagari
+Official language of Maharashtra. Accepted in subordinate courts and administrative offices in Maharashtra. SC has published Marathi-translated judgments. AI uses Marathi legal terminology from Tri-lingual Glossary (EN-Marathi-Hindi) published by Bombay HC.
+Gujarati
+Gujarati script
+Official language of Gujarat. Government of Gujarat sought HC use of Gujarati (pending central approval). Accepted in subordinate courts and all administrative offices in Gujarat. AI prompted to use legal Gujarati vocabulary from Legislative Dept glossary.
+⚠ High Courts and Supreme Court proceedings are in English (Article 348). Murdock-generated documents are intended for District Courts, Consumer Commissions, Labour Courts, RTI authorities, police stations, banks, and administrative offices — all of which accept documents in the regional language.
+6.3 Font Requirements for DOCX Output
+The docx.js generator must embed appropriate fonts for each language to ensure correct rendering on all systems:
+English: Arial (universally available)
+Hindi: Noto Sans Devanagari or Mangal (widely available on Windows/Android)
+Marathi: Noto Sans Devanagari (same script as Hindi, Marathi-specific ligatures supported)
+Gujarati: Noto Sans Gujarati or Shruti (Windows built-in)
+7. User-Facing Features
+7.1 Auto-Suggestions & Pre-filled Examples
+To reduce form drop-off, every module includes:
+Auto-suggestions: As user types in key fields, contextual suggestions appear. Example: typing 'defective' in the consumer complaint narrative suggests 'defective product', 'defective service', 'defective goods received'.
+Pre-filled examples: A 'Load Example' button fills the entire form with a realistic sample case. Example: Consumer Complaint loads a sample mobile phone defect case. User can edit any field. This removes blank-form anxiety.
+7.2 Document Review Screen
+After AI generation completes, the user sees a formatted document preview with:
+Yellow-highlighted fields: All AI-generated text clearly marked for review.
+Inline editing: User can click any field and edit directly on the review screen. Edited fields turn green ('User-verified').
+Mandatory checkbox: 'I have reviewed all highlighted fields and verified the accuracy of this document. I understand Murdock is not a substitute for legal advice.' Download is locked until checked.
+Short disclaimer text: Displayed above the checkbox in smaller font. Non-blocking — user reads it, checks box, proceeds.
+7.3 Document Sharing
+Both free and paid users can share documents via expiry links. Paid users additionally get persistent storage.
+Feature
+Tier
+Detail
+Download DOCX
+Free + Paid
+Client-side docx.js generation. Instant download.
+Shareable expiry link
+Free + Paid
+24h / 48h / 72h expiry. Link generates a temporary signed URL to the document.
+Save to Supabase
+Paid only
+Document saved permanently. Accessible anytime from document history.
+Document history
+Paid only
+All saved documents listed with date, module type, language, version.
+Version history
+Paid only
+Up to N versions per document. Edit → regenerate → compare versions.
+7.4 Document Version History (Paid)
+Legal documents are iterative. Murdock supports an edit → regenerate → review workflow for paid users:
+After downloading or saving a document, user can click 'Edit & Regenerate' to modify any form field and re-run the AI pipeline.
+Each regeneration creates a new version. Previous versions are preserved in Supabase.
+User can view all versions of a document from document history and download any version.
+Diff view (comparing two versions) is a v2 feature — not in scope for v1.
+7.5 AI Key Settings UI
+All users can manage their AI provider keys from the Settings page:
+Add key: Select provider, paste API key, save. Key is encrypted and stored in Supabase.
+View key: Only last 4 characters shown (e.g. ...ab7f). Full key never displayed after save.
+Usage logs: Per-provider usage log showing date, tokens used, estimated cost, module used, latency.
+Revoke key: One-click key deletion. Cannot be recovered — user must re-enter.
+Rotate key: Update to a new key without deleting usage history.
+Platform-managed key: Toggle option available for all users. When enabled, user's own key is not used — platform key is used instead. Charged via subscription tier.
+7.6 Free Tier Limits & Enforcement
+Free users are limited to 5 document generations per month. This is enforced via per-user usage tracking in Supabase:
+Each successful document generation increments the user's monthly doc_count in the users table.
+Counter resets on the 1st of each month (UTC).
+When limit is reached, generation is blocked and a clear upgrade prompt is shown.
+Admin dashboard can override limits for any individual user (e.g. extend free tier, grant unlimited access).
+8. Admin Dashboard
+The admin dashboard is a dedicated internal interface accessible only to users with the Admin role. It provides full control over every aspect of the system. Designed for ease of use — every feature must be accessible within 3 clicks from the dashboard home.
+8.1 User Management
+View all registered users with: name, email, role, tier, join date, doc count, last active date.
+Search / filter users by role, tier, usage, date.
+Change user tier (Free → Paid or vice versa) with immediate effect.
+Change user role (Individual, Lawyer, Business, Developer, Admin).
+Override doc generation limit for a specific user (e.g. grant 50 docs/month instead of 5).
+Suspend / reactivate user account.
+View full document history for any user.
+View AI key usage per user (provider, tokens, cost estimate).
+8.2 Feature Flags
+All features can be toggled per-user or per-tier globally:
+Enable / disable version history per user.
+Enable / disable platform-managed key access per user.
+Enable / disable shareable expiry links per user.
+Enable / disable Developer API access per user.
+Set document generation limit (override default 5/month) per user.
+Global toggle: disable a specific module entirely (e.g. temporarily disable RTI module for maintenance).
+8.3 Observability & Logs
+Full system observability from the admin dashboard:
+Per-doc logs: For every document generated — user ID, module, language, AI provider, latency (ms), token usage, estimated cost, success/failure, error message if failed.
+Failure tracking: All failed generation jobs with error details, retry count, last error timestamp. Filterable by error type, module, provider.
+Usage analytics: Daily / weekly / monthly charts for: docs generated, active users, most-used modules, most-used providers, average latency.
+Aggregated stats: Total docs generated, total tokens used, estimated platform AI cost (for platform-managed key users).
+Storage usage: Supabase DB and Storage usage percentage vs. free tier limits. Alert when approaching 80%.
+8.4 Prompt / Template / Schema Version Control
+All AI prompts, document templates, and field schemas are versioned in Supabase DB. The admin can update and rollback without code redeployment:
+Each prompt, template, and schema has a version number, created_at timestamp, and status (active / archived).
+Admin can view all versions for a given module + language combination.
+Admin can activate any previous version instantly (rollback).
+New version can be drafted and tested in staging before activating in production.
+Change log: Who changed what, when, and from which version to which.
+8.5 Monetisation Controls
+Admin controls all monetisation-related settings:
+Set and update monthly doc generation limits for free and paid tiers.
+Toggle platform-managed key availability per user or globally.
+View revenue-related metrics: paid user count, platform key usage cost.
+Developer API key management: Issue, revoke, and view usage of developer API keys.
+9. Security Requirements
+9.1 Authentication & Authorisation
+All authentication handled by Clerk. Murdock does not manage passwords or sessions directly.
+Every Netlify Function route is protected by Clerk JWT verification middleware.
+Role-based access control (RBAC) enforced at the function level — not just the UI.
+Admin routes require Admin role claim in the Clerk JWT. Any other role receives 403.
+9.2 API Key Security
+AI keys encrypted with AES-256-GCM before storage in Supabase. Encryption key stored as Netlify Environment Variable — not in DB.
+Key decryption occurs only inside Netlify Background Functions at AI call time. Decrypted key is held in memory only for the duration of the call and never logged.
+Keys are never returned to the browser after initial save. Only masked display (last 4 chars).
+Platform-managed keys stored as Netlify Environment Variables with restricted access.
+9.3 Rate Limiting
+All Netlify Function routes are rate-limited using a sliding window counter stored in Supabase:
+Unauthenticated routes: 20 requests per 15 minutes per IP.
+Authenticated routes: 100 requests per 15 minutes per user.
+Document generation route: 10 requests per hour per user (additional guard beyond monthly limit).
+Admin routes: 200 requests per 15 minutes per admin user.
+Rate limit exceeded: 429 response with Retry-After header.
+9.4 Data Security
+All Supabase tables use Row Level Security (RLS). Users can only access their own data.
+Admin has a separate service role key stored in Netlify Environment Variables — not in the client bundle.
+DOCX files in Supabase Storage are stored in private buckets. Accessed only via signed URLs (expiry: 1 hour for personal access, configurable for share links).
+No user PII is logged in per-doc logs beyond user_id. No names, no addresses.
+10. Monetisation Model
+10.1 Freemium Tiers
+Feature
+Free Tier
+Paid Tier
+Doc generations / month
+5
+Higher limit (admin-configurable)
+Download DOCX
+Yes
+Yes
+Shareable expiry link (24/48/72h)
+Yes
+Yes
+Save documents to Supabase
+No
+Yes
+Document history
+No
+Yes
+Version history (edit + regenerate)
+No
+Yes
+AI key storage in Supabase
+Yes
+Yes
+Platform-managed key access
+Yes (subscription add-on)
+Yes (included)
+Developer API access
+No
+Yes (separate paid tier)
+Multilingual output
+Yes
+Yes
+10.2 Developer API
+Developers can access Murdock's document generation pipeline programmatically via Netlify Functions. This is a separate paid product:
+Developer must have an Admin-approved Developer role and a paid API subscription.
+API key issued by admin from the dashboard. One key per developer account.
+Developer sends: module type, language, form fields JSON, and their API key in the request header.
+Response: job_id (async). Developer polls status endpoint, retrieves completed document as base64 DOCX.
+Developer pays Murdock. Murdock covers the underlying AI provider cost using platform-managed keys for Developer API calls.
+Usage logs per developer API key visible to admin.
+11. Observability & Monitoring
+11.1 Per-Document Logs
+Every document generation attempt (success or failure) produces a log row in Supabase:
+Field
+Description
+log_id
+UUID — primary key
+user_id
+References users table
+job_id
+References jobs table
+module
+e.g. consumer_complaint, rti_application
+language
+en / hi / mr / gu
+provider
+openai / anthropic / gemini / openrouter / groq / custom
+model
+Specific model used (e.g. gpt-4o-mini)
+latency_ms
+Total AI call duration in milliseconds
+prompt_tokens
+Input tokens consumed
+completion_tokens
+Output tokens consumed
+total_tokens
+Sum of prompt + completion
+success
+Boolean
+error_code
+Null on success; error type on failure
+error_message
+Null on success; truncated error on failure (no PII)
+created_at
+UTC timestamp
+11.2 Failure Tracking
+The admin failure tracking dashboard surfaces:
+All failed jobs in the last 7 days with error type, module, provider, and retry count.
+Failure rate by provider (useful for detecting unreliable providers).
+Failure rate by module (useful for detecting prompt / schema issues in specific modules).
+Most common error types (timeout, invalid JSON, auth error, rate limit).
+Any job that has failed > 3 times is flagged as 'Needs Investigation'.
+11.3 Version Control Audit Log
+Every change to a prompt, template, or schema is logged:
+Who changed it (admin user ID).
+What was changed (module + language + type: prompt / template / schema).
+Previous version number.
+New version number.
+Timestamp of change.
+12. Database Schema Overview
+Supabase PostgreSQL. All tables use UUID primary keys. Row Level Security (RLS) enabled on all user-facing tables.
+Table
+Purpose
+users
+User profile, role, tier, doc_count, monthly_reset_date, platform_key_enabled
+documents
+Saved documents (paid users). References user_id, module, language, version, storage_path.
+document_versions
+All versions per document for paid users. References document_id, version_number, storage_path.
+jobs
+Async job queue. Fields: job_id, user_id, module, language, input_json, status, result_json, created_at, updated_at.
+doc_logs
+Per-document observability log. See Section 11.1 for full schema.
+share_links
+Temporary share links. Fields: link_id, document_id, expiry_hours, expires_at, signed_url.
+api_keys
+Encrypted BYOK AI keys per user. Fields: key_id, user_id, provider, encrypted_key, key_hint (last 4), created_at.
+key_usage_logs
+Per-provider usage logs for AI keys. Fields: log_id, user_id, provider, tokens, cost_estimate, created_at.
+module_configs
+Versioned prompts, templates, schemas per module+language. Fields: config_id, module, language, type, version, content, status, created_at.
+rate_limits
+Sliding window rate limit counters. Fields: key (IP or user_id), window_start, count.
+developer_api_keys
+API keys for Developer role access. Fields: key_id, user_id, key_hash, usage_count, last_used, active.
+13. Non-Functional Requirements
+Category
+Target
+Notes
+Availability
+99.9% uptime
+Netlify SLA. Supabase SLA.
+Response time (sync routes)
+< 1 second
+Non-AI routes (auth, status poll, user data)
+AI generation latency
+< 30 seconds
+Varies by provider and doc complexity
+DOCX generation (client-side)
+< 2 seconds
+docx.js runs in browser
+Free tier sustainability
+0 infra cost at < 500 MAU
+All within Netlify + Supabase free tiers
+Security
+OWASP Top 10 compliance
+Rate limiting, RLS, encrypted keys, Clerk auth
+Accessibility
+WCAG 2.1 AA minimum
+Form fields, review screen, keyboard navigation
+Mobile responsiveness
+Full support
+React + Tailwind responsive design
+Browser support
+Chrome, Firefox, Safari, Edge (last 2 versions)
+No IE support
+Multilingual text rendering
+Correct script rendering for all 4 languages
+Correct Devanagari, Gujarati script fonts in DOCX
+14. Out of Scope — v1
+The following are explicitly excluded from v1. They may be addressed in future versions.
+Ollama support in the hosted app (requires self-hosting; documented separately)
+Public API without payment (free developer API access)
+Stamp paper or notarised document generation (requires physical process)
+Court e-filing integration (eCourts, NJDG API)
+Diff view / visual comparison between document versions
+Languages beyond English, Hindi, Marathi, Gujarati
+State-specific legal variations (handled in v2+)
+Payment gateway integration (manual tier upgrades in v1 via admin dashboard)
+Email notification for async job completion (polling UI used instead)
+Mobile app (PWA possible in future)
+15. Open Source & Repository Strategy
+Repository: GitHub — private from day 1.
+6-month review: At 6 months post-launch, owner evaluates whether to make the repo public. Not a commitment — a deliberate decision point.
+Developer API: Regardless of open source decision, Developer API access is always a paid feature. Opening the repo does not grant free API access.
+Sensitive data: All secrets (Supabase keys, Clerk keys, AI platform keys, AES encryption key) stored as Netlify Environment Variables. Never committed to repo.
+Contributions: If repo goes public, a CONTRIBUTING.md and CODE_OF_CONDUCT.md will be published. PRs require maintainer review.
+16. Assumptions, Constraints & Risks
+Type
+Item
+Impact
+Mitigation
+Assumption
+AI providers maintain stable APIs
+High
+Multi-provider support; user can switch providers
+Assumption
+Supabase free tier limits sufficient for < 500 MAU
+High
+Usage tracking + admin alerts at 80% capacity
+Constraint
+Netlify BF 15-min timeout
+Medium
+Pre-processor reduces AI call complexity; simple modules < 30s
+Constraint
+Supabase 500MB DB limit
+Medium
+Log purging, compact schemas, no large blobs in DB
+Risk
+AI hallucinations in legal text
+High
+Pre-processor + critical field locking + user review flags + disclaimer
+Risk
+Legal liability for incorrect documents
+High
+Prominent disclaimer, mandatory review checkbox, 'not legal advice' notice on all docs
+Risk
+Free tier exhaustion under viral growth
+Medium
+Rate limiting + doc limits + easy Netlify plan upgrade path
+Risk
+Gujarati / Marathi AI quality
+Medium
+Test with multiple providers; Gemini 1.5 Flash recommended for regional languages
+Risk
+Clerk free tier MAU limit (10,000)
+Low-Medium
+Monitor MAU; upgrade Clerk plan if approaching limit
+17. Legal Disclaimer — Product-Level
+The following disclaimer must appear prominently in the Murdock UI — on the landing page, on each module's introduction screen, and on the review screen before document download.
+DISCLAIMER: Murdock is a document drafting assistance tool, not a legal service provider. Documents generated by Murdock are structured drafts based on publicly available legal formats and AI assistance. They do not constitute legal advice. Users are solely responsible for reviewing, verifying, and using any document generated by Murdock. Murdock and its operators accept no liability for the accuracy, completeness, or legal validity of any document generated. Always consult a qualified legal professional for legal matters.
+18. Document Revision History
+Version
+Date
+Author
+Changes
+0.1
+—
+Product Owner
+Initial PRD (Murdock PRD v1)
+1.0
+18 April 2026
+Murdock Team
+Full SRS — replaces PRD. Architecture rebuilt for Supabase free tier + Netlify + Clerk. 7 legal modules defined. Async job queue, multilingual support, admin dashboard, observability, version control added.
+END OF DOCUMENT
+Murdock SRS v1.0 — Confidential

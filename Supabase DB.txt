@@ -1,0 +1,132 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.users (
+  user_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  role text DEFAULT 'Individual'::text,
+  tier text DEFAULT 'Free'::text,
+  doc_count integer DEFAULT 0,
+  monthly_reset_date timestamp with time zone,
+  platform_key_enabled boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT now(),
+  age integer,
+  gender character varying,
+  backup_email character varying,
+  phone_number character varying,
+  instagram_url character varying,
+  linkedin_url character varying,
+  twitter_url character varying,
+  is_active boolean DEFAULT true,
+  CONSTRAINT users_pkey PRIMARY KEY (user_id)
+);
+CREATE TABLE public.documents (
+  document_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  module text,
+  language text,
+  version integer DEFAULT 1,
+  storage_path text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT documents_pkey PRIMARY KEY (document_id),
+  CONSTRAINT documents_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id)
+);
+CREATE TABLE public.document_versions (
+  version_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  document_id uuid,
+  version_number integer,
+  storage_path text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT document_versions_pkey PRIMARY KEY (version_id),
+  CONSTRAINT document_versions_document_id_fkey FOREIGN KEY (document_id) REFERENCES public.documents(document_id)
+);
+CREATE TABLE public.jobs (
+  job_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  module text,
+  language text,
+  input_json jsonb,
+  status text DEFAULT 'queued'::text,
+  result_json jsonb,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT jobs_pkey PRIMARY KEY (job_id),
+  CONSTRAINT jobs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id)
+);
+CREATE TABLE public.doc_logs (
+  log_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  job_id uuid,
+  module text,
+  language text,
+  provider text,
+  model text,
+  latency_ms integer,
+  prompt_tokens integer,
+  completion_tokens integer,
+  total_tokens integer,
+  success boolean,
+  error_code text,
+  error_message text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT doc_logs_pkey PRIMARY KEY (log_id),
+  CONSTRAINT doc_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id),
+  CONSTRAINT doc_logs_job_id_fkey FOREIGN KEY (job_id) REFERENCES public.jobs(job_id)
+);
+CREATE TABLE public.share_links (
+  link_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  document_id uuid,
+  expiry_hours integer,
+  expires_at timestamp with time zone,
+  signed_url text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT share_links_pkey PRIMARY KEY (link_id),
+  CONSTRAINT share_links_document_id_fkey FOREIGN KEY (document_id) REFERENCES public.documents(document_id)
+);
+CREATE TABLE public.api_keys (
+  key_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  provider text,
+  encrypted_key text,
+  key_hint text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT api_keys_pkey PRIMARY KEY (key_id),
+  CONSTRAINT api_keys_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id)
+);
+CREATE TABLE public.key_usage_logs (
+  log_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  provider text,
+  tokens integer,
+  cost_estimate numeric,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT key_usage_logs_pkey PRIMARY KEY (log_id),
+  CONSTRAINT key_usage_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id)
+);
+CREATE TABLE public.module_configs (
+  config_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  module text,
+  language text,
+  type text,
+  version integer,
+  content jsonb,
+  status text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT module_configs_pkey PRIMARY KEY (config_id)
+);
+CREATE TABLE public.rate_limits (
+  key text NOT NULL,
+  window_start timestamp with time zone,
+  count integer,
+  CONSTRAINT rate_limits_pkey PRIMARY KEY (key)
+);
+CREATE TABLE public.developer_api_keys (
+  key_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  key_hash text,
+  usage_count integer DEFAULT 0,
+  last_used timestamp with time zone,
+  active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT developer_api_keys_pkey PRIMARY KEY (key_id),
+  CONSTRAINT developer_api_keys_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id)
+);
